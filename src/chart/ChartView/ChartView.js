@@ -1,5 +1,6 @@
 
 import createSvg from '../Svg';
+import createCanvas from '../Canvas';
 import createChartGrid from '../ChartGrid';
 import createBottomLabels from '../BottomLabels';
 import createDetailsPopup from '../DetailsPopup';
@@ -27,7 +28,8 @@ export const ChartView = (store) => {
     const node = createElement(css.chartView);
 
     const chartGrid = createChartGrid(store);
-    const chartLine = createSvg(store, SVG_LINE_WIDTH, PADDING);
+    // const chartLine = createSvg(store, SVG_LINE_WIDTH, PADDING);
+    const chartLine = createCanvas(store, SVG_LINE_WIDTH, PADDING);
     const bottomLabels = createBottomLabels(store);
     const detailsPopup = createDetailsPopup(store);
 

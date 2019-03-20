@@ -22,6 +22,12 @@
   fill: none;
   transition: opacity 0.3s ease-out;
 }
+.__chart-lib__yVYFH {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 .__chart-lib__2GaLT {
   position: absolute;
   left: 0;
