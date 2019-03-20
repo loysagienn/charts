@@ -3,11 +3,11 @@ export default ({points, lineIds, startFromZero}, [scaleStart = 0, scaleEnd = 0]
     const firstIndex = 0;
     const lastIndex = points.length - 1;
 
-    const startIndexPart = (lastIndex - firstIndex) * scaleStart + firstIndex;
-    const endIndexPart = (lastIndex - firstIndex) * (1 - scaleEnd) + firstIndex;
+    const scaleStartPoint = (lastIndex - firstIndex) * scaleStart + firstIndex;
+    const scaleEndPoint = (lastIndex - firstIndex) * (1 - scaleEnd) + firstIndex;
 
-    const startIndex = Math.ceil(startIndexPart);
-    const endIndex = Math.floor(endIndexPart);
+    const startIndex = Math.ceil(scaleStartPoint);
+    const endIndex = Math.floor(scaleEndPoint);
 
     let minY = startFromZero ? 0 : points[startIndex].lines[lineIds[0]];
     let maxY = minY;
@@ -36,7 +36,5 @@ export default ({points, lineIds, startFromZero}, [scaleStart = 0, scaleEnd = 0]
         maxY += 1;
     }
 
-    console.log(minY, maxY);
-
-    return {startIndex, endIndex, startIndexPart, endIndexPart, minY, maxY};
+    return {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY};
 };

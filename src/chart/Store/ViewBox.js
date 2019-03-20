@@ -69,15 +69,15 @@ class ViewBox extends EventEmitter {
 
             animation.timestamp = timestamp;
 
-            const {startIndex, endIndex, startIndexPart, endIndexPart, minY, maxY} = this.box;
+            const {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY} = this.box;
             const {minY: minYCurr, maxY: maxYCurr} = this.animationBox;
 
             if (minY === minYCurr && maxY === maxYCurr) {
                 this.animationBox = {
                     startIndex,
                     endIndex,
-                    startIndexPart,
-                    endIndexPart,
+                    scaleStartPoint,
+                    scaleEndPoint,
                     minY,
                     maxY,
                 };
@@ -98,8 +98,8 @@ class ViewBox extends EventEmitter {
             this.animationBox = {
                 startIndex,
                 endIndex,
-                startIndexPart,
-                endIndexPart,
+                scaleStartPoint,
+                scaleEndPoint,
                 minY: minYNext,
                 maxY: maxYNext,
             };

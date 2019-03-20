@@ -47,19 +47,19 @@ const startMove = (node, onMove, event) => {
 const onMouseMove = (node, store, [line, marks], event, currentIndex) => {
     const {points, lineIds, size: [, [width]], viewBox: {box}} = store;
 
-    const {startIndex, startIndexPart, endIndexPart, maxY, minY} = box;
+    const {startIndex, scaleStartPoint, scaleEndPoint, maxY, minY} = box;
 
     const valueHeight = maxY - minY;
-    const indexWidth = endIndexPart - startIndexPart;
+    const indexWidth = scaleEndPoint - scaleStartPoint;
     const {left: nodeLeft} = node.getBoundingClientRect();
     const left = getClientX(event) - nodeLeft;
 
-    const index = Math.round(left * indexWidth / (width - (PADDING * 2)) + startIndexPart);
+    const index = Math.round(left * indexWidth / (width - (PADDING * 2)) + scaleStartPoint);
     const point = points[index];
 
     // console.log(index);
 
-    const lineLeft = Math.round(1000 * (index - startIndexPart) / indexWidth) / 10;
+    const lineLeft = Math.round(1000 * (index - scaleStartPoint) / indexWidth) / 10;
 
     lineIds.forEach((id) => {
         const y = point.lines[id];

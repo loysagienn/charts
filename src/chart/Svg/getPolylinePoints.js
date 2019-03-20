@@ -1,51 +1,41 @@
 
-export default (points, lineId, {startIndex, endIndex, minY, maxY, startIndexPart, endIndexPart}, width, height, padding) => {
+export default (points, lineIds, viewBox, width, height, padding) => {
+    const {minY, maxY, scaleStartPoint, scaleEndPoint} = viewBox;
+
     // чтобы нижняя точка графика не обрезалась
     height -= 1;
 
+    const minIndex = 0;
+    const maxIndex = points.length - 1;
+
+    const indexWidth = scaleEndPoint - scaleStartPoint;
     // если чисто горизонтальная линия
-    const indexWidth = endIndexPart - startIndexPart;
     const originalHeight = maxY === minY ? 1 : maxY - minY;
 
     const factorX = (width - (padding * 2)) / indexWidth;
     const factorY = height / originalHeight;
 
-    const polylinePoints = [];
+    const paddingIndex = padding / factorX;
+    const lineStartIndex = Math.max(Math.floor(scaleStartPoint - paddingIndex), minIndex);
+    const lineEndIndex = Math.min(Math.ceil(scaleEndPoint + paddingIndex), maxIndex);
 
-    const getCoords = (index) => {
-        const {lines} = points[index];
-        const y = lines[lineId];
-        const positionX = (index - startIndexPart) * factorX + padding;
-        const positionY = height - ((y - minY) * factorY);
+    const polylinePoints = lineIds.reduce((acc, id) => Object.assign(acc, {[id]: []}), {});
 
-        return [positionX, positionY];
-    };
+    for (let i = lineStartIndex; i <= lineEndIndex; i++) {
+        const {lines} = points[i];
 
-    for (let i = startIndex - 1; i >= 0; i--) {
-        const [positionX, positionY] = getCoords(i);
+        const positionX = (i - scaleStartPoint) * factorX + padding;
 
-        polylinePoints.unshift(`${positionX},${positionY}`);
+        for (let j = 0; j < lineIds.length; j++) {
+            const lineId = lineIds[j];
 
-        if (positionX < 0) {
-            break;
+            const y = lines[lineId];
+
+            const positionY = height - ((y - minY) * factorY);
+
+            polylinePoints[lineId] += `${positionX},${positionY} `;
         }
     }
 
-    for (let i = startIndex; i <= endIndex; i++) {
-        const [positionX, positionY] = getCoords(i);
-
-        polylinePoints.push(`${positionX},${positionY}`);
-    }
-
-    for (let i = endIndex + 1; i < points.length; i++) {
-        const [positionX, positionY] = getCoords(i);
-
-        polylinePoints.push(`${positionX},${positionY}`);
-
-        if (positionX > width) {
-            break;
-        }
-    }
-
-    return polylinePoints.join(' ');
+    return polylinePoints;
 };

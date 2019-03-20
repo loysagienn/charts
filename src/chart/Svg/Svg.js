@@ -20,11 +20,13 @@ const render = ({points, allLineIds}, node, polylines, viewBox, width, height, p
     node.style.width = `${width}px`;
     node.style.height = `${height}px`;
 
-    allLineIds.forEach((id) => {
-        const polylinePoints = getPolylinePoints(points, id, viewBox, width, height, padding);
+    const lines = getPolylinePoints(points, allLineIds, viewBox, width, height, padding);
 
-        polylines[id].setAttribute('points', polylinePoints);
-    });
+    for (let i = 0; i < allLineIds.length; i++) {
+        const lineId = allLineIds[i];
+
+        polylines[lineId].setAttribute('points', lines[lineId]);
+    }
 };
 
 const lineOff = (polylines, lineId) => {

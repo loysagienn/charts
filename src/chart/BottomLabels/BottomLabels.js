@@ -60,15 +60,15 @@ const hideLabel = (container, label) => {
 const updateAll = (store, container, labelsCollection, activeLabels) => {
     const [[width]] = store.size;
     const {points} = store;
-    const {startIndexPart, endIndexPart} = store.viewBox.box;
-    const {startIndexPart: firstIndex, endIndexPart: lastIndex} = store.fullViewBox.box;
+    const {scaleStartPoint, scaleEndPoint} = store.viewBox.box;
+    const {scaleStartPoint: firstIndex, scaleEndPoint: lastIndex} = store.fullViewBox.box;
 
-    const scaleSize = endIndexPart - startIndexPart;
+    const scaleSize = scaleEndPoint - scaleStartPoint;
     const fullIndexSize = lastIndex - firstIndex;
     const indexSize = scaleSize;
 
-    const left = Math.round(1000 * (firstIndex - startIndexPart) / scaleSize) / 10;
-    const right = Math.round(1000 * (endIndexPart - lastIndex) / scaleSize) / 10;
+    const left = Math.round(1000 * (firstIndex - scaleStartPoint) / scaleSize) / 10;
+    const right = Math.round(1000 * (scaleEndPoint - lastIndex) / scaleSize) / 10;
 
     container.style.left = `${left}%`;
     container.style.right = `${right}%`;
@@ -89,12 +89,12 @@ const updateAll = (store, container, labelsCollection, activeLabels) => {
     const indexLabelHalfWidth = LABEL_WIDTH * indexSize / chartWidth / 2;
 
     let labelIndex = Math.ceil(
-        (startIndexPart - halfStep + (indexLabelHalfWidth)) / labelsStep,
+        (scaleStartPoint - halfStep + (indexLabelHalfWidth)) / labelsStep,
     ) * labelsStep + halfStep;
 
     const nextActiveLabels = new Set();
 
-    while (labelIndex < endIndexPart - indexLabelHalfWidth) {
+    while (labelIndex < scaleEndPoint - indexLabelHalfWidth) {
         nextActiveLabels.add(labelIndex);
 
         if (activeLabels.has(labelIndex)) {
