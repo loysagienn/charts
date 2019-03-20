@@ -1,0 +1,27 @@
+{
+  "name": "charts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "webpack": "NODE_ENV=production npx webpack",
+    "webpack-dev": "NODE_ENV=development npx webpack --watch --progress",
+    "webpack-dev-server": "NODE_ENV=development npx webpack-dev-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "base64-inline-loader": "^1.1.1",
+    "css-loader": "^2.1.1",
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "style-loader": "^0.23.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {}
+}

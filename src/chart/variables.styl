@@ -1,0 +1,37 @@
+
+maxWidth(width)
+    @media all and (max-width: width)
+        {block}
+
+minWidth(width)
+    @media all and (min-width: width)
+        {block}
+
+maxHeight(height)
+    @media all and (max-height: height)
+        {block}
+
+onlyTouch()
+    @media (pointer: coarse)
+        {block}
+
+$padding = 20px
+$chartListHeight = 40px
+
+$labelsFontColor = #808080
+$gridLineColor = rgba(0,0,0,0.1)
+$chartBgColor = #ffffff;
+$gridLineTextBgColor = alpha($chartBgColor, 0.8)
+$scalerShadowBgColor = rgba(240,250,255,0.7)
+$scalerControlBorderColor = rgba(0, 83, 141, 0.2)
+$chartListItemBorderColor = rgba(0,0,0,0.2)
+$chartListItemTextColor = #404040
+
+$labelsFontColorDark = #597287
+$gridLineColorDark = rgba(255,255,255,0.1)
+$chartBgColorDark = #242f3e;
+$gridLineTextBgColorDark = alpha($chartBgColorDark, 0.8)
+$scalerShadowBgColorDark = rgba(27,37,50,0.8)
+$scalerControlBorderColorDark = rgba(75, 157, 235, 0.2)
+$chartListItemBorderColorDark = #344658
+$chartListItemTextColorDark = #ffffff

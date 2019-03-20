@@ -1,0 +1,36 @@
+@import '../variables.styl'
+
+.labels
+    position: absolute
+    left: 0
+    right: 0
+    bottom: -22px
+    height: 22px
+    overflow: hidden
+    &.theme_light
+        .label
+            color: $labelsFontColor
+    &.theme_dark
+        .label
+            color: $labelsFontColorDark
+
+.wrapper
+    position: absolute
+    left: $padding
+    right: $padding
+    top: 0
+    bottom: 0
+
+.container
+    position: absolute
+    top: 0
+    bottom: 0
+
+.label
+    position: absolute
+    transform: translateX(-50%);
+    line-height: 22px
+    font-size: 12px
+    text-align: center
+    white-space: nowrap
+    transition: opacity 0.2s ease-out

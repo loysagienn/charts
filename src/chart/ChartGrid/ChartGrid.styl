@@ -1,0 +1,47 @@
+@import '../variables.styl'
+
+.grid
+    position: absolute
+    left: 0
+    top: 0
+    overflow: hidden
+
+.theme_light
+    .gridLine
+        border-bottom: 1px solid $gridLineColor
+        color: $labelsFontColor
+        .lineText
+            background-color: $gridLineTextBgColor
+
+.theme_dark
+    .gridLine
+        border-bottom: 1px solid $gridLineColorDark
+        color: $labelsFontColorDark
+        .lineText
+            background-color: $gridLineTextBgColorDark
+
+.gridLines
+    position: absolute
+    left: $padding
+    right: $padding
+    top: 0
+    bottom: 0
+    opacity: 0
+    transition: opacity 0.3s ease-out
+
+.gridLine
+    position: absolute
+    left: 0
+    right: 0
+    box-sizing: border-box
+    padding: 3px 0
+    font-size: 12px;
+    user-select: none
+    .lineText
+        position: relative
+        margin-left: -2px
+        padding: 0 2px
+        display: inline-block
+        line-height: 13px
+        border-radius: 100px
+        z-index: 2

@@ -1,0 +1,80 @@
+@import '../variables.styl'
+
+$resizerWidth = 8px
+$topBottomBorderWidth = 2px
+
+.theme_light
+    .shadow
+        background-color: $scalerShadowBgColor
+    .control
+        border-top: $topBottomBorderWidth solid $scalerControlBorderColor
+        border-bottom: $topBottomBorderWidth solid $scalerControlBorderColor
+        border-left: $resizerWidth solid $scalerControlBorderColor
+        border-right: $resizerWidth solid $scalerControlBorderColor
+
+.theme_dark
+    .shadow
+        background-color: $scalerShadowBgColorDark
+    .control
+        border-top: $topBottomBorderWidth solid $scalerControlBorderColorDark
+        border-bottom: $topBottomBorderWidth solid $scalerControlBorderColorDark
+        border-left: $resizerWidth solid $scalerControlBorderColorDark
+        border-right: $resizerWidth solid $scalerControlBorderColorDark
+
+
+.chartScaler
+    position: absolute
+    left: $padding
+
+.shadow
+    position: absolute
+    top: 0
+    bottom: 0
+    &.leftShadow
+        left: 0
+
+    &.rightShadow
+        right: 0
+
+.control
+    box-sizing: border-box
+    position: absolute
+    top: 0
+    bottom: 0
+    touch-action: none
+    .resizer
+        position: absolute
+        top: - $topBottomBorderWidth
+        bottom: - $topBottomBorderWidth
+        width: $resizerWidth
+        cursor: col-resize
+    
+        +onlyTouch()
+            width: $resizerWidth * 3;
+
+    .startResizer
+        left: - $resizerWidth
+    
+        +onlyTouch()
+            left: - $resizerWidth * 2
+
+    .endResizer
+        right: - $resizerWidth
+    
+        +onlyTouch()
+            right: - $resizerWidth * 2
+
+    .mover
+        position: absolute
+        top: -2px
+        bottom: -2px
+        left: 0
+        right: 0
+        cursor: grab
+    
+        +onlyTouch()
+            left: $resizerWidth
+            right: $resizerWidth
+
+        &:active
+            cursor: grabbing
