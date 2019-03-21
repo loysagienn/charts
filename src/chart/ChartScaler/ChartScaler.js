@@ -1,6 +1,7 @@
 
 import css from './ChartScaler.styl';
 import createSvg from '../Svg';
+import createCanvas from '../Canvas';
 import {CHANGE_SIZE, CHANGE_SCALE, ANIMATE_VIEW_BOX} from '../constants';
 import Control from './Control';
 import {createElement, appendChild, withTheme} from '../helpers';
@@ -110,7 +111,8 @@ const setScale = (store, chartLine) => {
 const ChartScaler = (store) => {
     const node = createElement(css.chartScaler);
     withTheme(store, node, css);
-    const chartLine = createSvg(store, SVG_LINE_WIDTH);
+    // const chartLine = createSvg(store, SVG_LINE_WIDTH);
+    const chartLine = createCanvas(store, SVG_LINE_WIDTH);
 
     appendChild(node, chartLine.node);
 

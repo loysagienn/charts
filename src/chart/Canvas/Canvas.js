@@ -5,7 +5,7 @@ import {LINE_ON, LINE_OFF} from '../constants';
 
 const pixelRatio = () => window.devicePixelRatio || 1;
 
-const animationTimeout = 20;
+const animationTimeout = 15;
 
 const renderLine = (ctx, points, lineId, viewBox, width, height, padding, color) => {
     const {minY, maxY, scaleStartPoint, scaleEndPoint} = viewBox;
@@ -107,18 +107,22 @@ const Canvas = (store, lineWidth = 2, padding = 0) => {
 
     const renderCurrent = () => currentViewBox && reRender(currentViewBox, currentWidth, currentHeight);
 
-    const changeLineOpacity = (lineId, step, fromTimeout) => requestAnimationFrame(() => {
+    const changeLineOpacity = (lineId, step, fromTimeout) => {
         if (!fromTimeout && opacityTimeouts[lineId]) {
             clearTimeout(opacityTimeouts[lineId]);
         }
 
-        const opacity = linesOpacity[lineId];
+        if (fromTimeout) {
+            requestAnimationFrame(() => {
+                if (!renderMark) {
+                    renderCurrent();
+                }
 
-        if (!renderMark) {
-            renderCurrent();
+                renderMark = false;
+            });
         }
 
-        renderMark = false;
+        const opacity = linesOpacity[lineId];
 
         if (fromTimeout && (opacity === 0 || opacity === 1)) {
             opacityTimeouts[lineId] = null;
@@ -126,7 +130,7 @@ const Canvas = (store, lineWidth = 2, padding = 0) => {
             return;
         }
 
-        const actualStep = (opacity + 0.2) * step;
+        const actualStep = step * (opacity + 0.3);
 
         linesOpacity[lineId] += actualStep;
 
@@ -137,7 +141,7 @@ const Canvas = (store, lineWidth = 2, padding = 0) => {
         }
 
         opacityTimeouts[lineId] = setTimeout(() => changeLineOpacity(lineId, step, true), animationTimeout);
-    });
+    };
 
     store.on(LINE_OFF, lineId => changeLineOpacity(lineId, -0.15));
     store.on(LINE_ON, lineId => changeLineOpacity(lineId, 0.15));

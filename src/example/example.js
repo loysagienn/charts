@@ -60,7 +60,6 @@ const renderChartSettings = () => {
         renderChart();
     });
 
-
     // start from zero checkbox
     const chartModeNode = document.createElement('label');
     settingsNode.appendChild(chartModeNode);
