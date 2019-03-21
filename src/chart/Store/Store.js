@@ -10,6 +10,7 @@ import {
     LINE_ON,
     CHANGE_THEME,
 } from '../constants';
+import {getRgbaColors} from '../helpers';
 import ViewBox from './ViewBox';
 
 const themes = {
@@ -56,6 +57,10 @@ class Store extends EventEmitter {
         this.allLineIds = lineIds;
         this.lineNames = names;
         this.lineColors = colors;
+        this.rgbaColors = Object.entries(colors).reduce(
+            (acc, [key, value]) => Object.assign(acc, {[key]: getRgbaColors(value)}),
+            {},
+        );
         this.startFromZero = startFromZero;
         this.theme = themes[theme] || themes.light;
 
@@ -71,6 +76,12 @@ class Store extends EventEmitter {
 
         this.viewBox = new ViewBox(this, scale);
         this.fullViewBox = new ViewBox(this, scale);
+
+        this.getColor = (lineId, opacity) => this._getColor(lineId, opacity);
+    }
+
+    _getColor(lineId, opacity = 1) {
+        return `rgba(${this.rgbaColors[lineId]},${opacity})`;
     }
 
     setTheme(newTheme) {

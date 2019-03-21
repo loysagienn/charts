@@ -1,7 +1,7 @@
 import {CHANGE_THEME} from './constants';
 
-export const createElement = (className) => {
-    const element = document.createElement('div');
+export const createElement = (className, tag = 'div') => {
+    const element = document.createElement(tag);
 
     if (className) {
         element.classList.add(className);
@@ -34,4 +34,15 @@ export const withTheme = (store, node, css) => {
 
         add(currentThemeClassName);
     });
+};
+
+export const getRgbaColors = (hex) => {
+    let c = hex.substring(1).split('');
+    if (c.length === 3) {
+        c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c = `0x${c.join('')}`;
+
+    // eslint-disable-next-line no-bitwise
+    return [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',');
 };

@@ -1,11 +1,13 @@
 import css from './Canvas.styl';
 // import getPolylinePoints from './getPolylinePoints';
 // import {createElement, appendChild} from '../helpers';
-// import {LINE_ON, LINE_OFF} from '../constants';
+import {LINE_ON, LINE_OFF} from '../constants';
 
 const pixelRatio = () => window.devicePixelRatio || 1;
 
-const renderLine = (ctx, points, lineId, viewBox, width, height, padding, lineColors) => {
+const animationTimeout = 20;
+
+const renderLine = (ctx, points, lineId, viewBox, width, height, padding, color) => {
     const {minY, maxY, scaleStartPoint, scaleEndPoint} = viewBox;
 
     // чтобы нижняя точка графика не обрезалась
@@ -43,26 +45,35 @@ const renderLine = (ctx, points, lineId, viewBox, width, height, padding, lineCo
         ctx.lineTo(positionX, positionY);
     }
 
-    ctx.strokeStyle = lineColors[lineId];
+    ctx.strokeStyle = color;
     ctx.stroke();
 };
 
-const render = ({points, allLineIds, lineColors}, node, ctx, viewBox, width, height, padding, lineWidth) => {
-    node.style.width = `${width}px`;
-    node.style.height = `${height}px`;
-    node.width = width * pixelRatio();
-    node.height = height * pixelRatio();
+const render = (store, ctx, viewBox, width, height, padding, lineWidth, linesOpacity) => {
+    const {points, allLineIds, getColor} = store;
 
-    ctx.clearRect(0, 0, width, height);
-    ctx.lineWidth = lineWidth * pixelRatio();
+    const ratio = pixelRatio();
+
+    ctx.clearRect(0, 0, width * ratio, height * ratio);
+    ctx.lineWidth = lineWidth * ratio;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     for (let i = 0; i < allLineIds.length; i++) {
         const lineId = allLineIds[i];
 
-        renderLine(ctx, points, lineId, viewBox, width, height, padding, lineColors);
+        const opacity = linesOpacity[lineId];
+        const color = getColor(lineId, opacity);
+
+        renderLine(ctx, points, lineId, viewBox, width, height, padding, color, opacity);
     }
+};
+
+const updateSize = (node, width, height) => {
+    node.style.width = `${width}px`;
+    node.style.height = `${height}px`;
+    node.width = width * pixelRatio();
+    node.height = height * pixelRatio();
 };
 
 const Canvas = (store, lineWidth = 2, padding = 0) => {
@@ -71,21 +82,69 @@ const Canvas = (store, lineWidth = 2, padding = 0) => {
 
     const ctx = node.getContext('2d');
 
-    // store.on(LINE_OFF, lineId => lineOff(polylines, lineId));
-    // store.on(LINE_ON, lineId => lineOn(polylines, lineId));
+    const linesOpacity = store.allLineIds.reduce((acc, id) => Object.assign(acc, {[id]: 1}), {});
+    const opacityTimeouts = {};
+
+    let currentWidth = 0;
+    let currentHeight = 0;
+    let currentViewBox = null;
+    let renderMark = false;
+
+    const reRender = (viewBox, width, height) => {
+        if (currentWidth !== width || currentHeight !== height) {
+            updateSize(node, width, height);
+
+            currentWidth = width;
+            currentHeight = height;
+        }
+
+        currentViewBox = viewBox;
+
+        render(store, ctx, viewBox, width, height, padding, lineWidth, linesOpacity);
+
+        renderMark = true;
+    };
+
+    const renderCurrent = () => currentViewBox && reRender(currentViewBox, currentWidth, currentHeight);
+
+    const changeLineOpacity = (lineId, step, fromTimeout) => requestAnimationFrame(() => {
+        if (!fromTimeout && opacityTimeouts[lineId]) {
+            clearTimeout(opacityTimeouts[lineId]);
+        }
+
+        const opacity = linesOpacity[lineId];
+
+        if (!renderMark) {
+            renderCurrent();
+        }
+
+        renderMark = false;
+
+        if (fromTimeout && (opacity === 0 || opacity === 1)) {
+            opacityTimeouts[lineId] = null;
+
+            return;
+        }
+
+        const actualStep = (opacity + 0.2) * step;
+
+        linesOpacity[lineId] += actualStep;
+
+        if (linesOpacity[lineId] <= 0) {
+            linesOpacity[lineId] = 0;
+        } else if (linesOpacity[lineId] >= 1) {
+            linesOpacity[lineId] = 1;
+        }
+
+        opacityTimeouts[lineId] = setTimeout(() => changeLineOpacity(lineId, step, true), animationTimeout);
+    });
+
+    store.on(LINE_OFF, lineId => changeLineOpacity(lineId, -0.15));
+    store.on(LINE_ON, lineId => changeLineOpacity(lineId, 0.15));
 
     return {
         node,
-        render: (viewBox, width, height) => render(
-            store,
-            node,
-            ctx,
-            viewBox,
-            width,
-            height,
-            padding,
-            lineWidth,
-        ),
+        render: reRender,
     };
 };
 
