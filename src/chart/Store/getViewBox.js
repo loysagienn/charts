@@ -1,5 +1,8 @@
 
-export default ({points, lineIds, startFromZero}, [scaleStart = 0, scaleEnd = 0] = []) => {
+export default (store, [scaleStart = 0, scaleEnd = 0] = [], lineIds) => {
+    const {points, startFromZero} = store;
+    lineIds = lineIds || store.lineIds;
+
     const firstIndex = 0;
     const lastIndex = points.length - 1;
 

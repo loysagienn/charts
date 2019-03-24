@@ -1,7 +1,8 @@
 
 import css from './ChartScaler.styl';
-import createSvg from '../Svg';
+// import createSvg from '../ScalebleSvg';
 import createCanvas from '../Canvas';
+// import createWebgl from '../Webgl';
 import {CHANGE_SIZE, CHANGE_SCALE, ANIMATE_VIEW_BOX} from '../constants';
 import Control from './Control';
 import {createElement, appendChild, withTheme} from '../helpers';
@@ -86,12 +87,12 @@ const renderControls = (store, node) => {
 };
 
 const setSize = (store, node, chartLine) => {
-    const {fullViewBox: {animationBox}, size: [,, [width, height, top]]} = store;
+    const {fullViewBox: {animationBox}, staticViewBox, size: [,, [width, height, top]]} = store;
     node.style.top = `${top}px`;
     node.style.width = `${width}px`;
     node.style.height = `${height}px`;
 
-    chartLine.render(animationBox, width, height);
+    chartLine.render(staticViewBox, animationBox, width, height);
 
     setMaxScaleWidth(60 / width);
 };
@@ -104,16 +105,16 @@ const updateControlPosition = ([start, end], control, leftShadow, rightShadow) =
 };
 
 const setScale = (store, chartLine) => {
-    const {fullViewBox: {animationBox}, size: [,, [width, height]]} = store;
-    chartLine.render(animationBox, width, height);
+    const {fullViewBox: {animationBox}, staticViewBox, size: [,, [width, height]]} = store;
+    chartLine.render(staticViewBox, animationBox, width, height);
 };
 
 const ChartScaler = (store) => {
     const node = createElement(css.chartScaler);
     withTheme(store, node, css);
-    // const chartLine = createSvg(store, SVG_LINE_WIDTH);
-    const chartLine = createCanvas(store, SVG_LINE_WIDTH);
 
+    const chartLine = createCanvas(store, SVG_LINE_WIDTH);
+    // const chartLine = createSvg(store, SVG_LINE_WIDTH);
     appendChild(node, chartLine.node);
 
     const [control, leftShadow, rightShadow] = renderControls(store, node);

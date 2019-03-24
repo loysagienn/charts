@@ -1,8 +1,12 @@
 
-let frameRunning = false;
-const queue = [];
+// 60 fps
+const framePlannedTime = 1000 / 60;
 
-const runFrameWorker = () => {
+let frameRunning = false;
+let queue = [];
+let marks = {};
+
+const runFrameWorker = (lastFrameTimestamp) => {
     frameRunning = true;
 
     return requestAnimationFrame((timestamp) => {
@@ -12,30 +16,50 @@ const runFrameWorker = () => {
             return;
         }
 
-        const queueLength = queue.length;
+        const timeFactor = lastFrameTimestamp ? ((timestamp - lastFrameTimestamp) / framePlannedTime) : 1;
+
+        const runQueue = queue;
+        const runMarks = marks;
+
+        queue = [];
+        marks = {};
+
+        const queueLength = runQueue.length;
 
         for (let i = 0; i < queueLength; i++) {
-            queue[i](timestamp);
+            const [func, mark] = runQueue[i];
+
+            if (!mark || runMarks[mark] === i) {
+                func(timeFactor, timestamp);
+            } else {
+                console.log(`skip mark ${mark}`);
+            }
         }
 
-        queue.splice(0, queueLength);
-
-        runFrameWorker();
+        runFrameWorker(timestamp);
     });
 };
 
-const nextFrame = (func) => {
-    queue.push(func);
+const nextFrame = (func, mark) => {
+    if (mark) {
+        marks[mark] = queue.push([func, mark]) - 1;
+    } else {
+        queue.push([func, mark]);
+    }
 
     if (!frameRunning) {
         runFrameWorker();
     }
 };
 
+// const nextFrame = func => setTimeout(() => func(1), 16);
+
+
 export default nextFrame;
 
+export const markHasBeenPlanned = mark => (mark in marks);
 
-const showFps = () => {
+export const showFps = (callback) => {
     let hits = 0;
 
     const newHit = () => nextFrame(() => {
@@ -45,12 +69,10 @@ const showFps = () => {
     });
 
     setInterval(() => {
-        console.log(`FPS: ${hits}`);
+        callback(hits);
 
         hits = 0;
     }, 1000);
 
     newHit();
 };
-
-showFps();

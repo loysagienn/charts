@@ -4,14 +4,47 @@
   right: 0;
   top: 0;
   bottom: 0;
-  overflow: auto;
+  background-color: #f0f0f0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+.__chart-lib__xEpBH.__chart-lib__1Ibww {
+  background-color: #344658;
+}
+.__chart-lib__xEpBH.__chart-lib__1Ibww .__chart-lib__3_HDy {
+  color: #fff;
 }
 .__chart-lib__3CREj {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
   top: 50px;
+  bottom: 6px;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+@media all and (max-width: 800px) {
+  .__chart-lib__3CREj {
+    padding: 0;
+  }
+}
+.__chart-lib__igkp5 {
+  position: relative;
+  width: calc(50% - 3px);
+  min-height: 450px;
+  max-height: 70vh;
+  height: 50vw;
+  margin-bottom: 6px;
+}
+.__chart-lib__igkp5:last-child {
+  margin-bottom: 0;
+}
+@media all and (max-width: 800px) {
+  .__chart-lib__igkp5 {
+    width: 100%;
+  }
 }
 .__chart-lib__3_HDy {
   position: absolute;
@@ -23,7 +56,50 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  color: #404040;
 }
 .__chart-lib__3_HDy label {
   margin-left: 10px;
+  user-select: none;
+  cursor: pointer;
+}
+.__chart-lib__3_HDy input {
+  cursor: pointer;
+}
+.__chart-lib__3TpGi {
+  position: relative;
+  margin-left: 20px;
+  user-select: none;
+  cursor: pointer;
+}
+.__chart-lib__3TpGi .__chart-lib__y_lDq {
+  line-height: 30px;
+  text-decoration: underline;
+}
+.__chart-lib__3TpGi .__chart-lib__1cEzD {
+  display: none;
+  background-color: #fff;
+  position: absolute;
+  right: 0;
+  top: 35px;
+  padding: 5px 0;
+  border-radius: 3px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.5);
+}
+.__chart-lib__3TpGi .__chart-lib__1cEzD label {
+  display: block;
+  white-space: nowrap;
+  margin: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.__chart-lib__3TpGi .__chart-lib__1cEzD label:hover {
+  background-color: #f0f0f0;
+}
+.__chart-lib__3TpGi .__chart-lib__1cEzD .__chart-lib__2MWYU {
+  padding: 10px 10px 5px;
+  font-weight: bold;
+}
+.__chart-lib__3TpGi .__chart-lib__1cEzD .__chart-lib__8lfQ_ {
+  display: flex;
 }

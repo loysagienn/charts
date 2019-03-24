@@ -28,15 +28,18 @@
     bottom: 0
     opacity: 0
     transition: opacity 0.3s ease-out
+    will-change: opacity
 
 .gridLine
     position: absolute
     left: 0
     right: 0
+    bottom: 0
     box-sizing: border-box
     padding: 3px 0
     font-size: 12px;
     user-select: none
+    will-change: transform
     .lineText
         position: relative
         margin-left: -2px
@@ -44,4 +47,3 @@
         display: inline-block
         line-height: 13px
         border-radius: 100px
-        z-index: 2

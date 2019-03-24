@@ -8,24 +8,19 @@
 .__chart-lib__38CYR.__chart-lib__1tOAh {
   background-color: #242f3e;
 }
-.__chart-lib__3FDpl {
-  display: block;
+.__chart-lib__20ZPE {
   position: absolute;
-  left: 0;
-  top: 0;
-}
-.__chart-lib__3FDpl polyline {
-  stroke: #f00;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-  transition: opacity 0.3s ease-out;
+  top: -50px;
+  right: 0;
+  padding: 10px 20px;
+  line-height: 30px;
+  color: #404040;
 }
 .__chart-lib__yVYFH {
   position: absolute;
   left: 0;
   top: 0;
+  will-change: contents;
 }
 .__chart-lib__2GaLT {
   position: absolute;
@@ -35,7 +30,7 @@
 }
 .__chart-lib__3P_QK .__chart-lib__362t3 {
   border-bottom: 1px solid rgba(0,0,0,0.1);
-  color: #808080;
+  color: #c0c0c0;
 }
 .__chart-lib__3P_QK .__chart-lib__362t3 .__chart-lib__2-cnj {
   background-color: rgba(255,255,255,0.8);
@@ -55,15 +50,18 @@
   bottom: 0;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  will-change: opacity;
 }
 .__chart-lib__362t3 {
   position: absolute;
   left: 0;
   right: 0;
+  bottom: 0;
   box-sizing: border-box;
   padding: 3px 0;
   font-size: 12px;
   user-select: none;
+  will-change: transform;
 }
 .__chart-lib__362t3 .__chart-lib__2-cnj {
   position: relative;
@@ -72,7 +70,6 @@
   display: inline-block;
   line-height: 13px;
   border-radius: 100px;
-  z-index: 2;
 }
 .__chart-lib__qI716 {
   position: absolute;
@@ -83,7 +80,7 @@
   overflow: hidden;
 }
 .__chart-lib__qI716.__chart-lib__2Xbkq .__chart-lib__1Xqzv {
-  color: #808080;
+  color: #c0c0c0;
 }
 .__chart-lib__qI716.__chart-lib__2BMsz .__chart-lib__1Xqzv {
   color: #597287;
@@ -99,6 +96,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
 }
 .__chart-lib__1Xqzv {
   position: absolute;
@@ -109,11 +108,33 @@
   white-space: nowrap;
   transition: opacity 0.2s ease-out;
 }
+.__chart-lib__3FDpl {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.__chart-lib__3FDpl polyline {
+  stroke: #f00;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: opacity 0.3s ease-out;
+  will-change: contents, opacity;
+}
 .__chart-lib__bq2r7 .__chart-lib__3VCGy {
-  background-color: #808080;
+  background-color: #c0c0c0;
 }
 .__chart-lib__bq2r7 .__chart-lib__8mh-S {
   background-color: #fff;
+}
+.__chart-lib__bq2r7 .__chart-lib__2FYFe {
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+}
+.__chart-lib__bq2r7 .__chart-lib__qEZfy {
+  color: #404040;
 }
 .__chart-lib__g4iGc .__chart-lib__3VCGy {
   background-color: #597287;
@@ -121,30 +142,68 @@
 .__chart-lib__g4iGc .__chart-lib__8mh-S {
   background-color: #242f3e;
 }
+.__chart-lib__g4iGc .__chart-lib__2FYFe {
+  background-color: #242f3e;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
+}
+.__chart-lib__g4iGc .__chart-lib__qEZfy {
+  color: #fff;
+}
 .__chart-lib__wouaI {
   position: absolute;
   left: 20px;
 }
 .__chart-lib__wouaI.__chart-lib__1_DdJ .__chart-lib__3VCGy {
   display: block;
+  transition: transform 0.1s ease-out;
+}
+.__chart-lib__wouaI.__chart-lib__1_DdJ .__chart-lib__8mh-S {
+  transition: transform 0.1s ease-out;
 }
 .__chart-lib__3VCGy {
   position: absolute;
   top: 0;
   bottom: 0;
+  left: -0.5px;
   width: 1px;
   display: none;
 }
 .__chart-lib__8mh-S {
   position: absolute;
   box-sizing: border-box;
-  left: -6px;
+  left: -5.5px;
+  bottom: 0;
   width: 12px;
   height: 12px;
   border-radius: 12px;
   margin-bottom: -6px;
   border-width: 2px;
   border-style: solid;
+}
+.__chart-lib__2FYFe {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  padding: 10px;
+  background-color: #fff;
+  transform: translate(-50%, 0);
+  border-radius: 3px;
+  transition: opacity 0.2s ease-out;
+}
+.__chart-lib__qEZfy {
+  font-size: 14px;
+  white-space: nowrap;
+  padding-bottom: 3px;
+}
+.__chart-lib__1WfuV {
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  font-size: 14px;
+  padding-top: 2px;
+}
+.__chart-lib__1WfuV .__chart-lib__eoVQi {
+  margin-right: 10px;
 }
 .__chart-lib__Yd8Xj {
   position: absolute;
@@ -268,13 +327,13 @@
   line-height: 24px;
   font-size: 15px;
   cursor: pointer;
+  display: flex;
 }
 .__chart-lib__m9pzy:not(:last-child) {
   margin-right: 15px;
 }
 .__chart-lib__1o7JP {
   position: relative;
-  float: left;
   margin-right: 10px;
   width: 24px;
   height: 24px;

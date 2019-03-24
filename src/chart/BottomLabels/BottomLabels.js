@@ -2,6 +2,7 @@
 import {createElement, appendChild, withTheme} from '../helpers';
 import {CHANGE_SIZE, CHANGE_SCALE, PADDING} from '../constants';
 import css from './BottomLabels.styl';
+import nextFrame from '../nextFrame';
 
 const LABEL_WIDTH = 45;
 const LABEL_SPACE = 30;
@@ -31,14 +32,14 @@ const showLabel = (container, label) => {
     if (label.hideTimeout) {
         clearTimeout(label.hideTimeout);
 
-        label.node.style.opacity = '1';
+        nextFrame(() => label.node.style.opacity = '1');
     } else {
         appendChild(container, label.node);
 
         label.showTimeout = setTimeout(() => {
             label.showTimeout = null;
 
-            label.node.style.opacity = '1';
+            nextFrame(() => label.node.style.opacity = '1');
         }, 30);
     }
 };
@@ -48,12 +49,12 @@ const hideLabel = (container, label) => {
         clearTimeout(label.showTimeout);
     }
 
-    label.node.style.opacity = '0';
+    nextFrame(() => label.node.style.opacity = '0');
 
     label.hideTimeout = setTimeout(() => {
         label.hideTimeout = null;
 
-        container.removeChild(label.node);
+        nextFrame(() => container.removeChild(label.node));
     }, 200);
 };
 
@@ -63,15 +64,17 @@ const updateAll = (store, container, labelsCollection, activeLabels) => {
     const {scaleStartPoint, scaleEndPoint} = store.viewBox.box;
     const {scaleStartPoint: firstIndex, scaleEndPoint: lastIndex} = store.fullViewBox.box;
 
-    const scaleSize = scaleEndPoint - scaleStartPoint;
+    const [scaleStart, scaleEnd] = store.scale;
+    const scaleWidth = 1 - scaleStart - scaleEnd;
+
+    const left = -Math.round(1000 * scaleStart) / 10;
+    const containerWidth = Math.round(1000 * 1 / scaleWidth) / 10;
+
+    container.style.transform = `translate(${left}%, 0)`;
+    container.style.width = `${containerWidth}%`;
+
+    const indexSize = scaleEndPoint - scaleStartPoint;
     const fullIndexSize = lastIndex - firstIndex;
-    const indexSize = scaleSize;
-
-    const left = Math.round(1000 * (firstIndex - scaleStartPoint) / scaleSize) / 10;
-    const right = Math.round(1000 * (scaleEndPoint - lastIndex) / scaleSize) / 10;
-
-    container.style.left = `${left}%`;
-    container.style.right = `${right}%`;
 
     const chartWidth = width - (PADDING * 2);
     const maxLabelCount = Math.floor(chartWidth / (LABEL_WIDTH + LABEL_SPACE));

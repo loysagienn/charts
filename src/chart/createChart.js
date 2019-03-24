@@ -50,6 +50,7 @@ export default (root, chartData, options) => {
     return {
         destroy,
         changeStartFromZeroMode: startFromZero => store.changeStartFromZeroMode(startFromZero),
+        disableAnimations: animationsDisabled => store.disableAnimations(animationsDisabled),
         setTheme: theme => store.setTheme(theme),
     };
 };

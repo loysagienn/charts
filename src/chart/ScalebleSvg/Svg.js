@@ -11,6 +11,7 @@ const createPolylines = (lineIds, colors, root, lineWidth) => lineIds.reduce((ac
     appendChild(root, polyline);
     polyline.style.stroke = colors[id];
     polyline.style.strokeWidth = `${lineWidth}px`;
+    polyline.setAttribute('vector-effect', 'non-scaling-stroke');
 
     return Object.assign(acc, {[id]: polyline});
 }, {});
@@ -31,6 +32,29 @@ const render = ({points, allLineIds}, node, polylines, viewBox, width, height, p
     // console.log(polylines[allLineIds[0]].points);
 };
 
+const updateScale = (store, node, polylines, staticViewBox, viewBox, width, height, padding, preventScaleX) => {
+    const {minY, maxY} = staticViewBox;
+    const {minY: scaleMinY, maxY: scaleMaxY} = viewBox;
+    const doublePadding = padding * 2;
+    const {allLineIds, scale} = store;
+    const [scaleStart, scaleEnd] = scale;
+
+    const scaleX = preventScaleX ? 1 : 1 / (1 - scaleStart - scaleEnd);
+    const scaleY = (maxY - minY) / (scaleMaxY - scaleMinY);
+
+    const translateX = preventScaleX
+        ? 0
+        : -(padding * (scaleStart + scaleEnd) + ((width - doublePadding) * scaleStart));
+
+    const translateY = height * (1 - scaleY) / scaleY;
+
+    for (let i = 0; i < allLineIds.length; i++) {
+        const polyline = polylines[allLineIds[i]];
+
+        polyline.setAttribute('transform', `scale(${scaleX} ${scaleY}) translate(${translateX} ${translateY})`);
+    }
+};
+
 const lineOff = (polylines, lineId) => {
     const polyline = polylines[lineId];
 
@@ -44,6 +68,10 @@ const lineOn = (polylines, lineId) => {
 
 const Svg = (store, lineWidth = 2, padding = 0) => {
     const {allLineIds, lineColors} = store;
+
+    let currentWidth = 0;
+    let currentHeight = 0;
+
     const node = createSvgNode('svg');
     node.classList.add(css.svg);
 
@@ -63,15 +91,16 @@ const Svg = (store, lineWidth = 2, padding = 0) => {
     return {
         node,
         destroy,
-        render: (viewBox, width, height) => render(
-            store,
-            node,
-            polylines,
-            viewBox,
-            width,
-            height,
-            padding,
-        ),
+        render: (staticViewBox, viewBox, width, height, preventScaleX) => {
+            if (width !== currentWidth || height !== currentHeight) {
+                render(store, node, polylines, staticViewBox, width, height, padding);
+            }
+
+            currentWidth = width;
+            currentHeight = height;
+
+            updateScale(store, node, polylines, staticViewBox, viewBox, width, height, padding, preventScaleX);
+        },
     };
 };
 

@@ -97,19 +97,22 @@ const sameGridLines = (curr, next) => {
     return true;
 };
 
-const updateGridPosition = (gridLines, lineNodes, maxY, minY) => {
-    const height = maxY - minY;
+const updateGridPosition = (gridLines, lineNodes, maxY, minY, height) => {
+    const scaleHeight = maxY - minY;
 
     for (let i = 0; i < gridLines.length; i++) {
-        const position = Math.round((gridLines[i] - minY) / height * 1000) / 10;
+        const position = height * (gridLines[i] - minY) / scaleHeight;
 
-        lineNodes[i].style.bottom = `${position}%`;
+        // lineNodes[i].style.bottom = `${position}px`;
+        lineNodes[i].style.transform = `translate(0, ${-position}px)`;
     }
 };
 
-const updateGridsPosition = (gridsCollection, maxY, minY) => {
+const updateGridsPosition = (gridsCollection, maxY, minY, store) => {
+    const [, [, height]] = store.size;
+
     gridsCollection.forEach(
-        ([gridLines, lineNodes]) => updateGridPosition(gridLines, lineNodes, maxY, minY),
+        ([gridLines, lineNodes]) => updateGridPosition(gridLines, lineNodes, maxY, minY, height),
     );
 };
 
@@ -136,7 +139,7 @@ const updateGrid = (node, store, currentGrid, currentGridLines, gridsCollection)
     const gridLines = getGridLines(minY, maxY, step, height);
 
     if (currentGrid && sameGridLines(currentGridLines, gridLines)) {
-        updateGridsPosition(gridsCollection, currMaxY, currMinY);
+        updateGridsPosition(gridsCollection, currMaxY, currMinY, store);
 
         return [currentGrid, currentGridLines];
     }
@@ -150,7 +153,7 @@ const updateGrid = (node, store, currentGrid, currentGridLines, gridsCollection)
     appendChild(node, grid);
     gridsCollection.set(grid, [gridLines, lineNodes]);
 
-    updateGridsPosition(gridsCollection, currMaxY, currMinY);
+    updateGridsPosition(gridsCollection, currMaxY, currMinY, store);
 
     setTimeout(() => {
         if (!grid.willBeDeleted) {

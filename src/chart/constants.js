@@ -11,3 +11,4 @@ export const ANIMATE_VIEW_BOX = 'ANIMATE_VIEW_BOX';
 export const LINE_OFF = 'LINE_OFF';
 export const LINE_ON = 'LINE_ON';
 export const CHANGE_THEME = 'CHANGE_THEME';
+export const CHANGE_ANIMATION_STATUS = 'CHANGE_ANIMATION_STATUS';

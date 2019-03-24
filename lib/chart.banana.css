@@ -8,24 +8,19 @@
 .Chart__chart.Chart__theme_dark {
   background-color: #242f3e;
 }
-.Svg__svg {
-  display: block;
+.Chart__fps {
   position: absolute;
-  left: 0;
-  top: 0;
-}
-.Svg__svg polyline {
-  stroke: #f00;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-  transition: opacity 0.3s ease-out;
+  top: -50px;
+  right: 0;
+  padding: 10px 20px;
+  line-height: 30px;
+  color: #404040;
 }
 .Canvas__canvas {
   position: absolute;
   left: 0;
   top: 0;
+  will-change: contents;
 }
 .ChartGrid__grid {
   position: absolute;
@@ -35,7 +30,7 @@
 }
 .ChartGrid__theme_light .ChartGrid__gridLine {
   border-bottom: 1px solid rgba(0,0,0,0.1);
-  color: #808080;
+  color: #c0c0c0;
 }
 .ChartGrid__theme_light .ChartGrid__gridLine .ChartGrid__lineText {
   background-color: rgba(255,255,255,0.8);
@@ -55,15 +50,18 @@
   bottom: 0;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  will-change: opacity;
 }
 .ChartGrid__gridLine {
   position: absolute;
   left: 0;
   right: 0;
+  bottom: 0;
   box-sizing: border-box;
   padding: 3px 0;
   font-size: 12px;
   user-select: none;
+  will-change: transform;
 }
 .ChartGrid__gridLine .ChartGrid__lineText {
   position: relative;
@@ -72,7 +70,6 @@
   display: inline-block;
   line-height: 13px;
   border-radius: 100px;
-  z-index: 2;
 }
 .BottomLabels__labels {
   position: absolute;
@@ -83,7 +80,7 @@
   overflow: hidden;
 }
 .BottomLabels__labels.BottomLabels__theme_light .BottomLabels__label {
-  color: #808080;
+  color: #c0c0c0;
 }
 .BottomLabels__labels.BottomLabels__theme_dark .BottomLabels__label {
   color: #597287;
@@ -99,6 +96,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
 }
 .BottomLabels__label {
   position: absolute;
@@ -109,11 +108,33 @@
   white-space: nowrap;
   transition: opacity 0.2s ease-out;
 }
+.Svg__svg {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.Svg__svg polyline {
+  stroke: #f00;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: opacity 0.3s ease-out;
+  will-change: contents, opacity;
+}
 .DetailsPopup__theme_light .DetailsPopup__line {
-  background-color: #808080;
+  background-color: #c0c0c0;
 }
 .DetailsPopup__theme_light .DetailsPopup__mark {
   background-color: #fff;
+}
+.DetailsPopup__theme_light .DetailsPopup__popup {
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
+}
+.DetailsPopup__theme_light .DetailsPopup__popupXValue {
+  color: #404040;
 }
 .DetailsPopup__theme_dark .DetailsPopup__line {
   background-color: #597287;
@@ -121,30 +142,68 @@
 .DetailsPopup__theme_dark .DetailsPopup__mark {
   background-color: #242f3e;
 }
+.DetailsPopup__theme_dark .DetailsPopup__popup {
+  background-color: #242f3e;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
+}
+.DetailsPopup__theme_dark .DetailsPopup__popupXValue {
+  color: #fff;
+}
 .DetailsPopup__root {
   position: absolute;
   left: 20px;
 }
 .DetailsPopup__root.DetailsPopup__visible .DetailsPopup__line {
   display: block;
+  transition: transform 0.1s ease-out;
+}
+.DetailsPopup__root.DetailsPopup__visible .DetailsPopup__mark {
+  transition: transform 0.1s ease-out;
 }
 .DetailsPopup__line {
   position: absolute;
   top: 0;
   bottom: 0;
+  left: -0.5px;
   width: 1px;
   display: none;
 }
 .DetailsPopup__mark {
   position: absolute;
   box-sizing: border-box;
-  left: -6px;
+  left: -5.5px;
+  bottom: 0;
   width: 12px;
   height: 12px;
   border-radius: 12px;
   margin-bottom: -6px;
   border-width: 2px;
   border-style: solid;
+}
+.DetailsPopup__popup {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  padding: 10px;
+  background-color: #fff;
+  transform: translate(-50%, 0);
+  border-radius: 3px;
+  transition: opacity 0.2s ease-out;
+}
+.DetailsPopup__popupXValue {
+  font-size: 14px;
+  white-space: nowrap;
+  padding-bottom: 3px;
+}
+.DetailsPopup__yItemValueLine {
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  font-size: 14px;
+  padding-top: 2px;
+}
+.DetailsPopup__yItemValueLine .DetailsPopup__yItemName {
+  margin-right: 10px;
 }
 .ChartView__chartView {
   position: absolute;
@@ -268,13 +327,13 @@
   line-height: 24px;
   font-size: 15px;
   cursor: pointer;
+  display: flex;
 }
 .ChartsList__item:not(:last-child) {
   margin-right: 15px;
 }
 .ChartsList__switcher {
   position: relative;
-  float: left;
   margin-right: 10px;
   width: 24px;
   height: 24px;

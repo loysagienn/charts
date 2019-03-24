@@ -9,14 +9,19 @@ import {
     LINE_OFF,
     LINE_ON,
     CHANGE_THEME,
+    CHANGE_ANIMATION_STATUS,
 } from '../constants';
 import {getRgbaColors} from '../helpers';
+import nextFrame from '../nextFrame';
 import ViewBox from './ViewBox';
+import getViewBox from './getViewBox';
 
 const themes = {
     light: 'light',
     dark: 'dark',
 };
+
+let storeFramePrefix = 1;
 
 const getSize = (width, height) => {
     const viewScalerSpace = 40;
@@ -48,9 +53,17 @@ const getSize = (width, height) => {
 };
 
 class Store extends EventEmitter {
-    constructor({points, lineIds, names, colors}, {startFromZero = false, theme = themes.light} = {}) {
+    constructor(
+        {points, lineIds, names, colors},
+        {
+            startFromZero = false,
+            theme = themes.light,
+            animationsDisabled = false,
+        } = {},
+    ) {
         super();
 
+        this.nextFramePrefix = `${storeFramePrefix++}`;
         const scale = [0, 0];
         this.points = points;
         this.lineIds = lineIds;
@@ -61,21 +74,21 @@ class Store extends EventEmitter {
             (acc, [key, value]) => Object.assign(acc, {[key]: getRgbaColors(value)}),
             {},
         );
+        this.rgbaColorsWebgl = Object.entries(this.rgbaColors).reduce(
+            (acc, [key, value]) => Object.assign(acc, {[key]: value.split(',').map(val => Number(val) / 255)}),
+            {},
+        );
         this.startFromZero = startFromZero;
+        this.animationsDisabled = animationsDisabled;
         this.theme = themes[theme] || themes.light;
 
         this.size = getSize(300, 300);
 
         this.scale = scale;
 
-        this.animation = {
-            speed: [0, 0],
-            timestamp: 0,
-            timeout: null,
-        };
-
         this.viewBox = new ViewBox(this, scale);
         this.fullViewBox = new ViewBox(this, scale);
+        this.staticViewBox = getViewBox(this, scale, this.allLineIds);
 
         this.getColor = (lineId, opacity) => this._getColor(lineId, opacity);
     }
@@ -93,13 +106,13 @@ class Store extends EventEmitter {
             return;
         }
 
-        requestAnimationFrame(() => this.trigger(CHANGE_THEME, this.theme));
+        nextFrame(() => this.trigger(CHANGE_THEME, this.theme));
     }
 
     changeSize(width, height) {
         this.size = getSize(width, height);
 
-        requestAnimationFrame(() => this.trigger(CHANGE_SIZE, this.size));
+        nextFrame(() => this.trigger(CHANGE_SIZE, this.size));
     }
 
     changeScale(start, end) {
@@ -107,7 +120,7 @@ class Store extends EventEmitter {
 
         this.viewBox.update(this.scale);
 
-        requestAnimationFrame(() => this.trigger(CHANGE_SCALE, this.scale));
+        nextFrame(() => this.trigger(CHANGE_SCALE, this.scale));
     }
 
     changeStartFromZeroMode(val) {
@@ -119,6 +132,15 @@ class Store extends EventEmitter {
 
         this.viewBox.update(this.scale);
         this.fullViewBox.update([0, 0]);
+    }
+
+    disableAnimations(animationsDisabled = false) {
+        if (this.animationsDisabled === animationsDisabled) {
+            return;
+        }
+
+        this.animationsDisabled = animationsDisabled;
+        this.trigger(CHANGE_ANIMATION_STATUS, animationsDisabled);
     }
 
     toggleLine(lineId) {

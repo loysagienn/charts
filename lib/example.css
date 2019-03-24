@@ -4,14 +4,47 @@
   right: 0;
   top: 0;
   bottom: 0;
-  overflow: auto;
+  background-color: #f0f0f0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+.example__root.example__darkTheme {
+  background-color: #344658;
+}
+.example__root.example__darkTheme .example__settings {
+  color: #fff;
 }
 .example__chart {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
   top: 50px;
+  bottom: 6px;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+@media all and (max-width: 800px) {
+  .example__chart {
+    padding: 0;
+  }
+}
+.example__chartWrapper {
+  position: relative;
+  width: calc(50% - 3px);
+  min-height: 450px;
+  max-height: 70vh;
+  height: 50vw;
+  margin-bottom: 6px;
+}
+.example__chartWrapper:last-child {
+  margin-bottom: 0;
+}
+@media all and (max-width: 800px) {
+  .example__chartWrapper {
+    width: 100%;
+  }
 }
 .example__settings {
   position: absolute;
@@ -23,7 +56,50 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  color: #404040;
 }
 .example__settings label {
   margin-left: 10px;
+  user-select: none;
+  cursor: pointer;
+}
+.example__settings input {
+  cursor: pointer;
+}
+.example__options {
+  position: relative;
+  margin-left: 20px;
+  user-select: none;
+  cursor: pointer;
+}
+.example__options .example__optionsTitle {
+  line-height: 30px;
+  text-decoration: underline;
+}
+.example__options .example__popup {
+  display: none;
+  background-color: #fff;
+  position: absolute;
+  right: 0;
+  top: 35px;
+  padding: 5px 0;
+  border-radius: 3px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.5);
+}
+.example__options .example__popup label {
+  display: block;
+  white-space: nowrap;
+  margin: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.example__options .example__popup label:hover {
+  background-color: #f0f0f0;
+}
+.example__options .example__popup .example__svgcanvasTitle {
+  padding: 10px 10px 5px;
+  font-weight: bold;
+}
+.example__options .example__popup .example__svgcanvas {
+  display: flex;
 }
