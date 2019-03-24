@@ -5,8 +5,9 @@ import css from './BottomLabels.styl';
 import nextFrame from '../nextFrame';
 
 const LABEL_WIDTH = 45;
-const LABEL_SPACE = 30;
+const LABEL_SPACE = 15;
 const LABEL_CHANGE_STEP = 1.5;
+const MAX_LABEL_COUNT = 10;
 
 
 const createLabel = (indexSize, labelIndex, point) => {
@@ -77,7 +78,7 @@ const updateAll = (store, container, labelsCollection, activeLabels) => {
     const fullIndexSize = lastIndex - firstIndex;
 
     const chartWidth = width - (PADDING * 2);
-    const maxLabelCount = Math.floor(chartWidth / (LABEL_WIDTH + LABEL_SPACE));
+    const maxLabelCount = Math.min(Math.floor(chartWidth / (LABEL_WIDTH + LABEL_SPACE)), MAX_LABEL_COUNT);
 
     let labelsStep = 1;
 
