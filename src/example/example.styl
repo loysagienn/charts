@@ -3,6 +3,12 @@ maxWidth(width)
     @media all and (max-width: width)
         {block}
 
+.wrapper
+    position: fixed
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
 
 .root
     position: fixed
@@ -10,45 +16,25 @@ maxWidth(width)
     right: 0
     top: 0
     bottom: 0
+    overflow: auto
     background-color: #f0f0f0
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    &.darkTheme
-        background-color: #344658
-        .settings
-            color: #ffffff
-
-.chart
-    position: absolute
-    left: 0
-    right: 0
-    top: 50px
-    bottom: 6px
-    overflow: auto
-    display: flex
-    flex-wrap: wrap
-    justify-content: space-between
-    padding: 0 6px
-    +maxWidth(800px)
-        padding: 0
 
 .chartWrapper
     position: relative
-    width: calc(50% - 3px);
-    min-height: 450px
-    max-height: 70vh
-    height: 50vw
-    margin-bottom: 6px
-    &:last-child
-        margin-bottom: 0
-    +maxWidth(800px)
+    width: 1000px
+    margin: 15px auto
+    // min-height: 450px
+    // height: 80vh
+    // max-height: 800px
+    +maxWidth(1020px)
         width: 100%
-
+        &:first-child
+            margin-top: 0
+        &:last-child
+            margin-bottom: 0
 
 .settings
-    position: absolute
-    left: 0
-    right: 0
-    top: 0
     height: 50px
     display: flex
     align-items: center
@@ -61,34 +47,3 @@ maxWidth(width)
         cursor: pointer
     input
         cursor: pointer
-
-.options
-    position: relative
-    margin-left: 20px
-    user-select: none
-    cursor: pointer
-    .optionsTitle
-        line-height: 30px
-        text-decoration: underline
-    .popup
-        display: none
-        background-color: white
-        position: absolute
-        right: 0
-        top: 35px
-        padding: 5px 0
-        border-radius: 3px
-        box-shadow: 0 2px 3px rgba(0,0,0,0.5);
-        label
-            display: block
-            white-space: nowrap
-            margin: 0
-            padding: 5px 10px
-            cursor: pointer
-            &:hover
-                background-color: #f0f0f0
-        .svgcanvasTitle
-            padding: 10px 10px 5px
-            font-weight: bold
-        .svgcanvas
-            display: flex

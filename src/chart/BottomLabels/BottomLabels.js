@@ -33,6 +33,8 @@ const showLabel = (container, label) => {
     if (label.hideTimeout) {
         clearTimeout(label.hideTimeout);
 
+        label.hideTimeout = null;
+
         nextFrame(() => label.node.style.opacity = '1');
     } else {
         appendChild(container, label.node);
@@ -48,6 +50,12 @@ const showLabel = (container, label) => {
 const hideLabel = (container, label) => {
     if (label.showTimeout) {
         clearTimeout(label.showTimeout);
+
+        label.showTimeout = null;
+    }
+
+    if (label.hideTimeout) {
+        return;
     }
 
     nextFrame(() => label.node.style.opacity = '0');
@@ -55,7 +63,7 @@ const hideLabel = (container, label) => {
     label.hideTimeout = setTimeout(() => {
         label.hideTimeout = null;
 
-        nextFrame(() => container.removeChild(label.node));
+        nextFrame(() => container.contains(label.node) && container.removeChild(label.node));
     }, 200);
 };
 

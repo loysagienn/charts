@@ -3,7 +3,7 @@ import {appendChild, addEvent, removeEvent} from './helpers';
 import createChart from './Chart';
 import Store from './Store';
 
-const prepareChartData = ({columns, types, names, colors}) => {
+const prepareChartData = ({columns, types, names, colors, y_scaled: yScaled}) => {
     const [xPoints, ...yLines] = columns;
 
     const lineIds = yLines.map(([id]) => id);
@@ -17,7 +17,7 @@ const prepareChartData = ({columns, types, names, colors}) => {
         });
     }
 
-    return {points, colors, names, lineIds, types};
+    return {points, colors, names, lineIds, types, yScaled};
 };
 
 export default (root, chartData, options) => {
@@ -50,7 +50,6 @@ export default (root, chartData, options) => {
     return {
         destroy,
         changeStartFromZeroMode: startFromZero => store.changeStartFromZeroMode(startFromZero),
-        disableAnimations: animationsDisabled => store.disableAnimations(animationsDisabled),
         setTheme: theme => store.setTheme(theme),
     };
 };

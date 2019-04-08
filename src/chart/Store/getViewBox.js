@@ -1,7 +1,46 @@
 
-export default (store, [scaleStart = 0, scaleEnd = 0] = [], lineIds) => {
+const GRID_LINE_COUNT = 6;
+const GRID_MIN_HEIGHT = 50;
+
+const roundStep = (exactStep) => {
+    const [fraction, digit] = Number(exactStep.toPrecision(2)).toExponential().split('e');
+
+    const [intStr, partStr] = fraction.split('.');
+
+    let int = Number(intStr);
+    let part = partStr ? Number(partStr) : 0;
+
+    if (int > 7 && part > 0) {
+        int = 10;
+        part = 0;
+    } else if (int > 2) {
+        if (part >= 5) {
+            int++;
+        }
+
+        part = 0;
+    } else if (part < 3) {
+        part = 0;
+    } else if (part > 7) {
+        int++;
+        part = 0;
+    } else {
+        part = 5;
+    }
+
+    return Number(`${int}.${part}e${digit}`);
+};
+
+const getGridStep = (minY, maxY, store) => {
+    const [, [, height]] = store.size;
+
+    const exactStep = (maxY - minY) / Math.min(Math.floor(height / GRID_MIN_HEIGHT), GRID_LINE_COUNT);
+
+    return roundStep(exactStep);
+};
+
+export default (store, [scaleStart = 0, scaleEnd = 0] = [], lineIds, calcGridStep) => {
     const {points, startFromZero} = store;
-    lineIds = lineIds || store.lineIds;
 
     const firstIndex = 0;
     const lastIndex = points.length - 1;
@@ -33,11 +72,20 @@ export default (store, [scaleStart = 0, scaleEnd = 0] = [], lineIds) => {
         lineIds.forEach(checkMinMax(lines));
     }
 
-    maxY += (maxY - minY) / 20;
+    // увеличиваем maxY на 10%
+    maxY += (maxY - minY) / 10;
 
     if (minY === maxY) {
         maxY += 1;
     }
 
-    return {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY};
+    let gridStep = maxY - minY;
+
+    if (calcGridStep) {
+        gridStep = getGridStep(minY, maxY, store);
+
+        minY = Math.floor(minY / gridStep) * gridStep;
+    }
+
+    return {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY, gridStep};
 };

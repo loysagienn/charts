@@ -1,78 +1,82 @@
 @import '../variables.styl'
 
-$borderWidth = 1px
-$itemPadding = 7px
-$contentSize = $chartListHeight - (2 * ($borderWidth + $itemPadding))
+
+$itemHeight = 34px
+$borderWidth = 2px
+$itemPadding = 3px
+$paddingRight = 12px
+$checkboxMarginRight = 4px
+$transitionTime = 0.3s
+$contentSize = $itemHeight - (2 * ($borderWidth + $itemPadding))
+$textTranslate = - (($contentSize - $paddingRight / 2) / 2)
 
 .theme_light
-    .item
-        border: $borderWidth solid $chartListItemBorderColor
-        color: $chartListItemTextColor
-    .switcher
-        .switcherInner
-            background-color: $chartBgColor
+    // .switcher
+    //     border: $borderWidth solid $chartListItemBorderColor
+    //     color: $chartListItemTextColor
+    // .switcher
+    //     .switcherInner
+    //         background-color: $chartBgColor
 
 .theme_dark
-    .item
-        border: $borderWidth solid $chartListItemBorderColorDark
-        color: $chartListItemTextColorDark
-    .switcher
-        .switcherInner
-            background-color: $chartBgColorDark
+    // .switcher
+    //     border: $borderWidth solid $chartListItemBorderColorDark
+    //     color: $chartListItemTextColorDark
+    // .switcher
+    //     .switcherInner
+    //         background-color: $chartBgColorDark
 
 .root
-    position: absolute
-    bottom: 20px
+    padding: 5px $padding 15px
     left: $padding
-    overflow: auto
 
 .list
     height: 100%
     display: flex
+    flex-wrap: wrap
     align-items: center
 
-.item
-    border-radius: $chartListHeight
+.switcher
+    border-width: $borderWidth
+    border-style: solid
+    border-radius: $itemHeight
     padding: $itemPadding
-    padding-right: 15px
+    padding-right: $paddingRight
     line-height: $contentSize
-    font-size: 15px
+    font-size: 14px
     cursor: pointer
     display: flex
+    transition: background-color $transitionTime ease-out
+    margin-top: 10px
 
     &:not(:last-child)
-        margin-right: 15px
+        margin-right: 10px
 
-.switcher
+    .title
+        transition: color $transitionTime ease-out, transform $transitionTime ease-out
+        transform: translate($textTranslate, 0)
+        -ms-user-select: none; 
+        -moz-user-select: none; 
+        -webkit-user-select: none; 
+        user-select: none; 
+
+    &.checked
+        .checkbox
+            transform: scale(1, 1)
+            opacity: 1
+        .title
+            transform: translate(0, 0)
+
+.checkbox
     position: relative
-    margin-right: 10px
+    margin-right: $checkboxMarginRight
     width: $contentSize
     height: $contentSize
     border-radius: $contentSize
-    .switcherCheck
-        position: absolute
-        left: 0
-        right: 0
-        top: 0
-        bottom: 0
-        border-radius: $contentSize
-        background-image: url('./check.svg');
-        background-repeat: no-repeat
-        background-size: 75%
-        background-position: 50% 50%
-    .switcherInner
-        position: absolute
-        left: 1px
-        right: 1px
-        top: 1px
-        bottom: 1px
-        border-radius: $contentSize
-        opacity: 1
-        transform: scale(1, 1)
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out
-    
-    &.checked
-        .switcherInner
-            transform: scale(0.1, 0.1)
-            opacity: 0
-            transition: transform 0.3s ease-out, opacity 0.2s ease-out 0.2s
+    background-image: url('./check.svg');
+    background-repeat: no-repeat
+    background-size: 75%
+    background-position: 50% 50%
+    transform: scale(0.1, 0.1)
+    opacity: 0
+    transition: transform $transitionTime ease-out, opacity $transitionTime ease-out

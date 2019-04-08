@@ -1,9 +1,13 @@
 @import '../variables.styl'
 
-$resizerWidth = 8px
-$topBottomBorderWidth = 2px
+$resizerWidth = 10px
+$topBottomBorderWidth = 1px
+$radius = 5px
 
 .theme_light
+    &.chartScaler:before,
+    &.chartScaler:after
+        background-color: $chartBgColor
     .shadow
         background-color: $scalerShadowBgColor
     .control
@@ -13,6 +17,9 @@ $topBottomBorderWidth = 2px
         border-right: $resizerWidth solid $scalerControlBorderColor
 
 .theme_dark
+    &.chartScaler:before,
+    &.chartScaler:after
+        background-color: $chartBgColorDark
     .shadow
         background-color: $scalerShadowBgColorDark
     .control
@@ -25,6 +32,20 @@ $topBottomBorderWidth = 2px
 .chartScaler
     position: absolute
     left: $padding
+    &:before,
+    &:after
+        content: ''
+        display: block
+        position: absolute
+        top: 0
+        bottom: 0
+        width: $padding
+
+    &:before
+        left: - $padding
+
+    &:after
+        right: - $padding
 
 .shadow
     position: absolute
@@ -32,9 +53,11 @@ $topBottomBorderWidth = 2px
     bottom: 0
     &.leftShadow
         left: 0
+        border-radius: $radius 0 0 $radius
 
     &.rightShadow
         right: 0
+        border-radius: 0 $radius $radius 0
 
 .control
     box-sizing: border-box
@@ -42,13 +65,15 @@ $topBottomBorderWidth = 2px
     top: 0
     bottom: 0
     touch-action: none
+    border-radius: $radius
     .resizer
         position: absolute
         top: - $topBottomBorderWidth
         bottom: - $topBottomBorderWidth
         width: $resizerWidth
         cursor: col-resize
-    
+        z-index: 2
+
         +onlyTouch()
             width: $resizerWidth * 3;
 
@@ -66,8 +91,8 @@ $topBottomBorderWidth = 2px
 
     .mover
         position: absolute
-        top: -2px
-        bottom: -2px
+        top: - $topBottomBorderWidth
+        bottom: - $topBottomBorderWidth
         left: 0
         right: 0
         cursor: grab
@@ -78,3 +103,19 @@ $topBottomBorderWidth = 2px
 
         &:active
             cursor: grabbing
+    &:before,
+    &:after
+        content: ''
+        display: block
+        height: 10px
+        width: 2px
+        border-radius: 2px
+        background-color: #ffffff
+        position: absolute
+        top: calc(50% - 5px)
+
+    &:before
+        left: - ($resizerWidth / 2 + 1)
+
+    &:after
+        right: - ($resizerWidth / 2 + 1)

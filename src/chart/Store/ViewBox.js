@@ -31,7 +31,7 @@ const getPosition = (target, current, speed, boxDiff, timeDiff) => {
 };
 
 class ViewBox extends EventEmitter {
-    constructor(store, scale, lineIds = null) {
+    constructor(store, scale, lineIds, calcGridStep) {
         super();
 
         this.store = store;
@@ -42,14 +42,15 @@ class ViewBox extends EventEmitter {
             timeout: null,
         };
 
-        this.box = getViewBox(this.store, scale, lineIds);
+        this.calcGridStep = calcGridStep;
+        this.box = getViewBox(this.store, scale, lineIds, calcGridStep);
         this.animationBox = this.box;
 
         this.nextFrameAnimationPlanned = false;
     }
 
     update(scale) {
-        this.box = getViewBox(this.store, scale);
+        this.box = getViewBox(this.store, scale, this.store.lineIds, this.calcGridStep);
 
         this.trigger(CHANGE_VIEW_BOX, this.box);
 
@@ -71,11 +72,10 @@ class ViewBox extends EventEmitter {
 
             animation.timestamp = timestamp;
 
-            const {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY} = this.box;
+            const {startIndex, endIndex, scaleStartPoint, scaleEndPoint, minY, maxY, gridStep} = this.box;
             const {minY: minYCurr, maxY: maxYCurr} = this.animationBox;
-            const {animationsDisabled} = this.store;
 
-            if (animationsDisabled || (minY === minYCurr && maxY === maxYCurr)) {
+            if (minY === minYCurr && maxY === maxYCurr) {
                 this.animationBox = {
                     startIndex,
                     endIndex,
@@ -83,6 +83,7 @@ class ViewBox extends EventEmitter {
                     scaleEndPoint,
                     minY,
                     maxY,
+                    gridStep,
                 };
                 animation.speed = [0, 0];
 
@@ -105,6 +106,7 @@ class ViewBox extends EventEmitter {
                 scaleEndPoint,
                 minY: minYNext,
                 maxY: maxYNext,
+                gridStep,
             };
             animation.speed = [maxYSpeedNext, minYSpeedNext];
 

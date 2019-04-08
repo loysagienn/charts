@@ -3,12 +3,21 @@
 .chart
     position: relative;
     box-sizing: border-box;
+    border-radius: 4px
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 
     &.theme_light
         background-color: $chartBgColor;
 
     &.theme_dark
         background-color: $chartBgColorDark;
+    
+    +maxWidth(1020px)
+        border-radius: 0
+        box-shadow: none
+
+.viewScaler
+    position: relative
 
 .fps
     position: absolute

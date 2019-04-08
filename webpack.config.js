@@ -33,6 +33,11 @@ module.exports = {
             //         },
             //     },
             // },
+
+            {
+                test: /\.glsl$/i,
+                use: 'raw-loader',
+            },
             {
                 test: /\.styl$/,
                 use: ExtractTextPlugin.extract({

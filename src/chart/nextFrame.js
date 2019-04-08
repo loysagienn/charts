@@ -31,8 +31,6 @@ const runFrameWorker = (lastFrameTimestamp) => {
 
             if (!mark || runMarks[mark] === i) {
                 func(timeFactor, timestamp);
-            } else {
-                console.log(`skip mark ${mark}`);
             }
         }
 

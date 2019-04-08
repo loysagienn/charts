@@ -2,14 +2,12 @@
 import css from './ChartScaler.styl';
 // import createSvg from '../ScalebleSvg';
 import createCanvas from '../Canvas';
-// import createWebgl from '../Webgl';
+import createWebgl from '../Webgl';
 import {CHANGE_SIZE, CHANGE_SCALE, ANIMATE_VIEW_BOX} from '../constants';
 import Control from './Control';
 import {createElement, appendChild, withTheme} from '../helpers';
 import {createShadow, getScaleStart, getScaleEnd, getScaleMove, getClientX, startMove, setMaxScaleWidth, preventDefault} from './helpers';
 
-
-const SVG_LINE_WIDTH = 1.5;
 
 const moveStartPoint = (event, store, node) => {
     preventDefault(event);
@@ -92,14 +90,12 @@ const setSize = (store, node, chartLine) => {
     node.style.width = `${width}px`;
     node.style.height = `${height}px`;
 
-    chartLine.render(staticViewBox, animationBox, width, height);
-
     setMaxScaleWidth(60 / width);
 };
 
 const updateControlPosition = ([start, end], control, leftShadow, rightShadow) => {
-    leftShadow.style.width = `${start * 100}%`;
-    rightShadow.style.width = `${end * 100}%`;
+    leftShadow.style.width = `calc(${start * 100}% + 5px)`;
+    rightShadow.style.width = `calc(${end * 100}% + 5px)`;
 
     control.setPosition(start, end);
 };
@@ -113,15 +109,16 @@ const ChartScaler = (store) => {
     const node = createElement(css.chartScaler);
     withTheme(store, node, css);
 
-    const chartLine = createCanvas(store, SVG_LINE_WIDTH);
+    // const chartLine = createCanvas(store, SVG_LINE_WIDTH);
+    // const chartLine = createWebgl(store, SVG_LINE_WIDTH);
     // const chartLine = createSvg(store, SVG_LINE_WIDTH);
-    appendChild(node, chartLine.node);
+    // appendChild(node, chartLine.node);
 
     const [control, leftShadow, rightShadow] = renderControls(store, node);
 
-    store.on(CHANGE_SIZE, () => setSize(store, node, chartLine));
+    store.on(CHANGE_SIZE, () => setSize(store, node));
     store.on(CHANGE_SCALE, scale => updateControlPosition(scale, control, leftShadow, rightShadow));
-    store.fullViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
+    // store.fullViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
 
     updateControlPosition(store.scale, control, leftShadow, rightShadow);
 

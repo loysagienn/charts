@@ -1,235 +1,108 @@
 
 
 import css from './example.styl';
-import chartList from './chartData.json';
+// import chartList from './chartData.json';
+import chart1 from '../../data/1/overview.json';
+import chart2 from '../../data/2/overview.json';
+import chart3 from '../../data/3/overview.json';
+import chart4 from '../../data/4/overview.json';
+import chart5 from '../../data/5/overview.json';
 
 const {chart} = window;
 
 // console.log(chartList);
+// const wrapper = document.createElement('div');
+// wrapper.classList.add(css.wrapper);
+
+// document.body.appendChild(wrapper);
 
 const root = document.createElement('div');
-
 root.classList.add(css.root);
 
+// wrapper.appendChild(root);
 document.body.appendChild(root);
 
-const chartNode = document.createElement('div');
-chartNode.classList.add(css.chart);
-root.appendChild(chartNode);
-
-const currentChart = 0;
-let startFromZero = true;
-let useDarkTheme = false;
-let animationsDisabled = false;
-// let chartItem;
+// const startFromZero = false;
+// let useDarkTheme = false;
 
 const charts = [];
 
+console.log(chart1);
+console.log(chart2);
+console.log(chart3);
+console.log(chart4);
+console.log(chart5);
+
 const renderCharts = () => {
-    chartList.forEach(renderChart);
-    // renderChart(chartList[0]);
+    renderChart(chart1, 0);
+    renderChart(chart2, 1);
+    renderChart(chart3, 2);
+    renderChart(chart4, 3);
+    renderChart(chart5, 4);
 };
 
-const renderChart = (data) => {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add(css.chartWrapper);
-    chartNode.appendChild(wrapper);
+const renderChart = (data, index) => {
+    const chartWrapper = document.createElement('div');
+    chartWrapper.classList.add(css.chartWrapper);
+    root.appendChild(chartWrapper);
 
-    charts.push(chart.createChart(wrapper, data, {
-        startFromZero,
-        animationsDisabled,
-        theme: useDarkTheme ? 'dark' : 'light',
-    }));
+    const chartHeight = window.innerWidth < 1020
+        ? Math.max(200, window.innerHeight - 240)
+        : Math.max(200, window.innerHeight - 280);
+
+    setTimeout(() => {
+        charts.push(chart.createChart(chartWrapper, data, {
+            // startFromZero: false,
+            chartHeight,
+            // theme: useDarkTheme ? 'dark' : 'light',
+        }));
+    }, 200 * index);
 };
 
-const renderThemeSwitcher = (optionsPopup) => {
-    const darkThemeNode = document.createElement('label');
-    optionsPopup.appendChild(darkThemeNode);
+// const renderThemeSwitcher = (optionsPopup) => {
+//     const darkThemeNode = document.createElement('label');
+//     optionsPopup.appendChild(darkThemeNode);
 
-    const themeCheckbox = document.createElement('input');
-    themeCheckbox.setAttribute('type', 'checkbox');
-    darkThemeNode.appendChild(themeCheckbox);
-    darkThemeNode.appendChild(document.createTextNode(' Dark theme'));
-    themeCheckbox.checked = useDarkTheme;
+//     const themeCheckbox = document.createElement('input');
+//     themeCheckbox.setAttribute('type', 'checkbox');
+//     darkThemeNode.appendChild(themeCheckbox);
+//     darkThemeNode.appendChild(document.createTextNode(' Dark theme'));
+//     themeCheckbox.checked = useDarkTheme;
 
-    themeCheckbox.addEventListener('change', () => {
-        useDarkTheme = themeCheckbox.checked;
+//     themeCheckbox.addEventListener('change', () => {
+//         useDarkTheme = themeCheckbox.checked;
 
-        if (useDarkTheme) {
-            root.classList.add(css.darkTheme);
-        } else {
-            root.classList.remove(css.darkTheme);
-        }
+//         charts.forEach(item => item.setTheme(useDarkTheme ? 'dark' : 'light'));
+//     });
+// };
 
-        charts.forEach(item => item.setTheme(useDarkTheme ? 'dark' : 'light'));
+// const renderStartFromZero = (optionsPopup) => {
+//     const chartModeNode = document.createElement('label');
+//     optionsPopup.appendChild(chartModeNode);
 
-        // chartItem.setTheme(useDarkTheme ? 'dark' : 'light');
-    });
-};
+//     const checkbox = document.createElement('input');
+//     checkbox.setAttribute('type', 'checkbox');
+//     chartModeNode.appendChild(checkbox);
+//     chartModeNode.appendChild(document.createTextNode(' Start from 0'));
+//     checkbox.checked = startFromZero;
 
-const renderStartFromZero = (optionsPopup) => {
-    const chartModeNode = document.createElement('label');
-    optionsPopup.appendChild(chartModeNode);
+//     checkbox.addEventListener('change', () => {
+//         startFromZero = checkbox.checked;
 
-    const checkbox = document.createElement('input');
-    checkbox.setAttribute('type', 'checkbox');
-    chartModeNode.appendChild(checkbox);
-    chartModeNode.appendChild(document.createTextNode(' Start from 0'));
-    checkbox.checked = startFromZero;
-
-    checkbox.addEventListener('change', () => {
-        startFromZero = checkbox.checked;
-
-        charts.forEach(item => item.changeStartFromZeroMode(startFromZero));
-    });
-};
-
-const renderDisableAnimations = (optionsPopup) => {
-    const chartModeNode = document.createElement('label');
-    optionsPopup.appendChild(chartModeNode);
-
-    const checkbox = document.createElement('input');
-    checkbox.setAttribute('type', 'checkbox');
-    chartModeNode.appendChild(checkbox);
-    chartModeNode.appendChild(document.createTextNode(' Disable animations'));
-    checkbox.checked = animationsDisabled;
-
-    checkbox.addEventListener('change', () => {
-        animationsDisabled = checkbox.checked;
-
-        charts.forEach(item => item.disableAnimations(animationsDisabled));
-    });
-};
-
-const setOptionsPopupEvents = (options, popup) => {
-    let popupVisible = false;
-
-    const showPopup = (event) => {
-        if (!popupVisible) {
-            popupVisible = true;
-            popup.style.display = 'block';
-        }
-        event.fromPopupShowEvent = true;
-    };
-
-    const hidePopup = (event) => {
-        if (!event.fromPopupShowEvent) {
-            popupVisible = false;
-            popup.style.display = 'none';
-        }
-    };
-
-    options.addEventListener('click', showPopup);
-    document.body.addEventListener('click', hidePopup);
-};
-
-const renderChartOptions = (settingsNode) => {
-    const options = document.createElement('div');
-    options.classList.add(css.options);
-    settingsNode.appendChild(options);
-    options.addEventListener('click', () => options.focus());
-    options.addEventListener('mousedown', () => options.focus());
-
-    const title = document.createElement('div');
-    title.classList.add(css.optionsTitle);
-    title.appendChild(document.createTextNode('Chart options'));
-    options.appendChild(title);
-
-    const optionsPopup = document.createElement('div');
-    optionsPopup.classList.add(css.popup);
-    options.appendChild(optionsPopup);
-
-    renderThemeSwitcher(optionsPopup);
-    renderStartFromZero(optionsPopup);
-    renderDisableAnimations(optionsPopup);
-
-    setOptionsPopupEvents(options, optionsPopup);
-};
-
-const renderChartSettings = () => {
-    const settingsNode = document.createElement('div');
-    settingsNode.classList.add(css.settings);
-    root.appendChild(settingsNode);
+//         charts.forEach(item => item.changeStartFromZeroMode(startFromZero));
+//     });
+// };
 
 
-    // const chartSelectNode = document.createElement('select');
-    // settingsNode.appendChild(chartSelectNode);
+// const renderChartSettings = () => {
+//     const settingsNode = document.createElement('div');
+//     settingsNode.classList.add(css.settings);
+//     root.appendChild(settingsNode);
 
-    // chartList.forEach((chartInfo, i) => {
-    //     const option = document.createElement('option');
-    //     option.setAttribute('value', i);
-
-    //     if (i === currentChart) {
-    //         option.setAttribute('selected', true);
-    //     }
-
-    //     option.appendChild(document.createTextNode(`Chart ${i + 1}`));
+//     renderThemeSwitcher(settingsNode);
+//     renderStartFromZero(settingsNode);
+// };
 
 
-    //     chartSelectNode.appendChild(option);
-    // });
-
-    // chartSelectNode.addEventListener('change', () => {
-    //     if (chartItem) {
-    //         chartItem.destroy();
-    //     }
-
-    //     currentChart = chartSelectNode.value;
-
-    //     renderChart();
-    // });
-
-    // renderChartOptions(settingsNode);
-    renderThemeSwitcher(settingsNode);
-    renderStartFromZero(settingsNode);
-};
-
-
+// renderChartSettings();
 renderCharts();
-renderChartSettings();
-
-
-// const setSvgMode = (val) => {
-//     useSvg = val;
-
-//     chartItem.useSvgRendering(useSvg);
-// };
-
-// const renderSvgCanvasSwitcher = (optionsPopup) => {
-//     const title = document.createElement('div');
-//     title.classList.add(css.svgcanvasTitle);
-//     title.appendChild(document.createTextNode('render with:'));
-//     optionsPopup.appendChild(title);
-//     const switcher = document.createElement('div');
-//     switcher.classList.add(css.svgcanvas);
-//     optionsPopup.appendChild(switcher);
-
-//     // render canvas radio
-//     const canvasMode = document.createElement('label');
-//     switcher.appendChild(canvasMode);
-//     const canvasRadio = document.createElement('input');
-//     canvasRadio.setAttribute('type', 'radio');
-//     canvasRadio.setAttribute('value', 'canvas');
-//     canvasRadio.setAttribute('name', 'svgcanvasswitcher');
-//     if (!useSvg) {
-//         canvasRadio.checked = true;
-//     }
-//     canvasMode.appendChild(canvasRadio);
-//     canvasMode.appendChild(document.createTextNode(' canvas'));
-
-//     // render svg radio
-//     const svgMode = document.createElement('label');
-//     switcher.appendChild(svgMode);
-//     const svgRadio = document.createElement('input');
-//     svgRadio.setAttribute('type', 'radio');
-//     svgRadio.setAttribute('value', 'svg');
-//     svgRadio.setAttribute('name', 'svgcanvasswitcher');
-//     if (useSvg) {
-//         svgRadio.checked = true;
-//     }
-//     svgMode.appendChild(svgRadio);
-//     svgMode.appendChild(document.createTextNode(' svg'));
-
-//     svgRadio.addEventListener('change', () => setSvgMode(true));
-//     canvasRadio.addEventListener('change', () => setSvgMode(false));
-// };

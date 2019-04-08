@@ -7,6 +7,7 @@ import {CHANGE_SIZE, LINE_ON, LINE_OFF, PADDING} from '../constants';
 import nextFrame from '../nextFrame';
 import css from './DetailsPopup.styl';
 
+const SHOP_POPUP_TIMEOUT = 200;
 
 const setSize = (node, store) => {
     const {size: [, [width, height]]} = store;
@@ -48,8 +49,6 @@ const startMove = (node, onMove, event) => {
 };
 
 const updatePopup = ([popup, xValue, yValues], {x, lines}, {lineIds, lineColors, lineNames}, width, lineLeft) => {
-    console.log('update popup');
-
     const date = new Date(x);
     const dateText = date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
 
@@ -82,8 +81,6 @@ const updatePopup = ([popup, xValue, yValues], {x, lines}, {lineIds, lineColors,
     } else {
         popup.style.transform = 'translate(-50%, 0)';
     }
-
-    console.log(popupWidth);
 };
 
 let updatePopupThrottleTimeout = null;
@@ -101,7 +98,7 @@ const throttledUpdatePopup = (popup, point, store, width, lineLeft) => {
         popupNode.style.opacity = 1;
 
         nextFrame(() => updatePopup(popup, point, store, width, lineLeft));
-    }, 300);
+    }, SHOP_POPUP_TIMEOUT);
 };
 
 // const throttledUpdatePopup = throttle(updatePopup, 300);
@@ -116,7 +113,10 @@ const onMouseMove = (node, store, [line, marks, popup], event, currentIndex) => 
     const {left: nodeLeft} = node.getBoundingClientRect();
     const left = getClientX(event) - nodeLeft;
 
-    const index = Math.round(left * indexWidth / (width - (PADDING * 2)) + scaleStartPoint);
+    let index = Math.round(left * indexWidth / (width - (PADDING * 2)) + scaleStartPoint);
+    index = Math.min(index, points.length - 1);
+    index = Math.max(index, 0);
+
     const point = points[index];
 
     if (currentIndex === index) {
@@ -128,7 +128,7 @@ const onMouseMove = (node, store, [line, marks, popup], event, currentIndex) => 
     lineIds.forEach((id) => {
         const y = point.lines[id];
 
-        const bottom = height * y / valueHeight;
+        const bottom = height * (y - minY) / valueHeight;
 
         // marks[id].style.bottom = `${bottom}%`;
         marks[id].style.transform = `translate(0, ${-bottom}px)`;
@@ -179,8 +179,6 @@ const renderLine = (store) => {
 export const DetailsPopup = (store) => {
     const node = createElement(css.root);
     withTheme(store, node, css);
-
-    console.log(store);
 
     let currentIndex = null;
 

@@ -3,13 +3,13 @@ import EventEmitter from '../EventEmitter';
 import {
     CHART_SCALER_HEIGHT,
     PADDING,
-    CHART_LIST_HEIGHT,
+    VIEW_SCALER_SPACE,
     CHANGE_SIZE,
     CHANGE_SCALE,
     LINE_OFF,
     LINE_ON,
     CHANGE_THEME,
-    CHANGE_ANIMATION_STATUS,
+    CHANGE_VISIBILITY,
 } from '../constants';
 import {getRgbaColors} from '../helpers';
 import nextFrame from '../nextFrame';
@@ -23,13 +23,8 @@ const themes = {
 
 let storeFramePrefix = 1;
 
-const getSize = (width, height) => {
-    const viewScalerSpace = 40;
-    const scalerListSpace = 20;
-    const bottomPadding = 20;
-
-    const chartViewHeight = height
-        - CHART_SCALER_HEIGHT - CHART_LIST_HEIGHT - viewScalerSpace - scalerListSpace - bottomPadding;
+const getSize = (width, chartViewHeight) => {
+    const height = chartViewHeight + VIEW_SCALER_SPACE + CHART_SCALER_HEIGHT;
 
     return ([
         // total size
@@ -43,22 +38,22 @@ const getSize = (width, height) => {
         [
             width - (PADDING * 2),
             CHART_SCALER_HEIGHT,
-            chartViewHeight + viewScalerSpace,
+            chartViewHeight + VIEW_SCALER_SPACE,
         ],
-        [
-            width - (PADDING * 2),
-            CHART_LIST_HEIGHT,
-        ],
+        // [
+        //     width - (PADDING * 2),
+        //     CHART_LIST_HEIGHT,
+        // ],
     ]);
 };
 
 class Store extends EventEmitter {
     constructor(
-        {points, lineIds, names, colors},
+        {points, lineIds, names, colors, yScaled},
         {
             startFromZero = false,
             theme = themes.light,
-            animationsDisabled = false,
+            chartHeight = 500,
         } = {},
     ) {
         super();
@@ -70,6 +65,10 @@ class Store extends EventEmitter {
         this.allLineIds = lineIds;
         this.lineNames = names;
         this.lineColors = colors;
+        this.isVisible = false;
+        this.chartHeight = chartHeight;
+        this.yScaled = yScaled;
+
         this.rgbaColors = Object.entries(colors).reduce(
             (acc, [key, value]) => Object.assign(acc, {[key]: getRgbaColors(value)}),
             {},
@@ -79,15 +78,15 @@ class Store extends EventEmitter {
             {},
         );
         this.startFromZero = startFromZero;
-        this.animationsDisabled = animationsDisabled;
+        this.themes = themes;
         this.theme = themes[theme] || themes.light;
 
-        this.size = getSize(300, 300);
+        this.size = getSize(300, chartHeight);
 
         this.scale = scale;
 
-        this.viewBox = new ViewBox(this, scale);
-        this.fullViewBox = new ViewBox(this, scale);
+        this.viewBox = new ViewBox(this, scale, lineIds, true);
+        this.fullViewBox = new ViewBox(this, scale, lineIds);
         this.staticViewBox = getViewBox(this, scale, this.allLineIds);
 
         this.getColor = (lineId, opacity) => this._getColor(lineId, opacity);
@@ -95,6 +94,16 @@ class Store extends EventEmitter {
 
     _getColor(lineId, opacity = 1) {
         return `rgba(${this.rgbaColors[lineId]},${opacity})`;
+    }
+
+    changeVisibility(isVisible) {
+        if (this.isVisible === isVisible) {
+            return;
+        }
+
+        this.isVisible = isVisible;
+
+        this.trigger(CHANGE_VISIBILITY, isVisible);
     }
 
     setTheme(newTheme) {
@@ -109,8 +118,8 @@ class Store extends EventEmitter {
         nextFrame(() => this.trigger(CHANGE_THEME, this.theme));
     }
 
-    changeSize(width, height) {
-        this.size = getSize(width, height);
+    changeSize(width) {
+        this.size = getSize(width, this.chartHeight);
 
         nextFrame(() => this.trigger(CHANGE_SIZE, this.size));
     }
@@ -132,15 +141,6 @@ class Store extends EventEmitter {
 
         this.viewBox.update(this.scale);
         this.fullViewBox.update([0, 0]);
-    }
-
-    disableAnimations(animationsDisabled = false) {
-        if (this.animationsDisabled === animationsDisabled) {
-            return;
-        }
-
-        this.animationsDisabled = animationsDisabled;
-        this.trigger(CHANGE_ANIMATION_STATUS, animationsDisabled);
     }
 
     toggleLine(lineId) {

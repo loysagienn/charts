@@ -2,7 +2,7 @@
 
 .theme_light
     .line
-        background-color: $labelsFontColor
+        background-color: $verticalLineColor
     .mark
         background-color: $chartBgColor
     .popup
@@ -13,7 +13,7 @@
 
 .theme_dark
     .line
-        background-color: $labelsFontColorDark
+        background-color: $verticalLineColorDark
     .mark
         background-color: $chartBgColorDark
     .popup
@@ -28,6 +28,7 @@
     &.visible
         .line
             display: block
+            // off transition in firefox
             transition: transform 0.1s ease-out
         .mark
             transition: transform 0.1s ease-out

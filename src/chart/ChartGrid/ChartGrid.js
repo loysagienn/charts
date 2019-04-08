@@ -3,37 +3,6 @@ import {createElement, appendChild, withTheme} from '../helpers';
 import {CHANGE_SIZE, ANIMATE_VIEW_BOX} from '../constants';
 import css from './ChartGrid.styl';
 
-const GRID_LINE_COUNT = 6;
-const GRID_MIN_HEIGHT = 50;
-
-const getStep = (exactStep) => {
-    const [fraction, digit] = Number(exactStep.toPrecision(2)).toExponential().split('e');
-
-    const [intStr, partStr] = fraction.split('.');
-
-    let int = Number(intStr);
-    let part = partStr ? Number(partStr) : 0;
-
-    if (int > 7 && part > 0) {
-        int = 10;
-        part = 0;
-    } else if (int > 2) {
-        if (part >= 5) {
-            int++;
-        }
-
-        part = 0;
-    } else if (part < 3) {
-        part = 0;
-    } else if (part > 7) {
-        int++;
-        part = 0;
-    } else {
-        part = 5;
-    }
-
-    return Number(`${int}.${part}e${digit}`);
-};
 
 const formatLines = (lines, step) => {
     const [, digit] = step.toExponential().split('e');
@@ -128,15 +97,11 @@ const removeGrid = (node, grid, gridsCollection) => {
 };
 
 const updateGrid = (node, store, currentGrid, currentGridLines, gridsCollection) => {
-    const {minY, maxY} = store.viewBox.box;
+    const {minY, maxY, gridStep} = store.viewBox.box;
     const {minY: currMinY, maxY: currMaxY} = store.viewBox.animationBox;
     const [, [, height]] = store.size;
 
-    const exactStep = (maxY - minY) / Math.min(Math.floor(height / GRID_MIN_HEIGHT), GRID_LINE_COUNT);
-
-    const step = getStep(exactStep);
-
-    const gridLines = getGridLines(minY, maxY, step, height);
+    const gridLines = getGridLines(minY, maxY, gridStep, height);
 
     if (currentGrid && sameGridLines(currentGridLines, gridLines)) {
         updateGridsPosition(gridsCollection, currMaxY, currMinY, store);

@@ -1,53 +1,51 @@
 
 import {createElement, appendChild, addEvent, withTheme} from '../helpers';
-import {CHANGE_SIZE, LINE_OFF, LINE_ON} from '../constants';
+import {LINE_OFF, LINE_ON} from '../constants';
 import css from './ChartsList.styl';
 
-const setSize = (node, store) => {
-    const {size: [,,, [width, height]]} = store;
-
-    node.style.width = `${width}px`;
-    node.style.height = `${height}px`;
-};
 
 const isChecked = (store, lineId) => (store.lineIds.indexOf(lineId) !== -1);
 
 const createListItem = (node, store, lineId) => {
-    const item = createElement(css.item);
+    const switcher = createElement(css.switcher);
     const name = store.lineNames[lineId];
     const color = store.lineColors[lineId];
-    const switcher = createElement(css.switcher);
-    const switcherCheck = createElement(css.switcherCheck);
-    const switcherInner = createElement(css.switcherInner);
+    const checkbox = createElement(css.checkbox);
+    const title = createElement(css.title);
+    appendChild(title, document.createTextNode(name));
+
+    switcher.style.borderColor = color;
 
     if (isChecked(store, lineId)) {
-        lineOn([switcher]);
+        lineOn([switcher, title, color]);
     }
 
-    switcher.style.backgroundColor = color;
+    appendChild(switcher, checkbox);
+    appendChild(switcher, title);
 
-    appendChild(switcher, switcherCheck);
-    appendChild(switcher, switcherInner);
-    appendChild(item, switcher);
-    appendChild(item, document.createTextNode(name));
+    addEvent(switcher, 'click', () => store.toggleLine(lineId));
 
-    addEvent(item, 'click', () => store.toggleLine(lineId));
+    appendChild(node, switcher);
 
-    appendChild(node, item);
-
-    return [switcher];
+    return [switcher, title, color];
 };
 
-const lineOn = ([switcher]) => {
+const lineOn = ([switcher, title, color]) => {
     if (!switcher.classList.contains(css.checked)) {
         switcher.classList.add(css.checked);
     }
+
+    switcher.style.backgroundColor = color;
+    title.style.color = '#ffffff';
 };
 
-const lineOff = ([switcher]) => {
+const lineOff = ([switcher, title, color]) => {
     if (switcher.classList.contains(css.checked)) {
         switcher.classList.remove(css.checked);
     }
+
+    switcher.style.backgroundColor = 'rgba(0,0,0,0)';
+    title.style.color = color;
 };
 
 const ChartsList = (store) => {
@@ -62,7 +60,6 @@ const ChartsList = (store) => {
         {},
     );
 
-    store.on(CHANGE_SIZE, () => setSize(root, store));
     store.on(LINE_ON, lineId => lineOn(lineItems[lineId]));
     store.on(LINE_OFF, lineId => lineOff(lineItems[lineId]));
 
