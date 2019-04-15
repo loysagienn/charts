@@ -31,8 +31,12 @@ const runFrameWorker = (lastFrameTimestamp) => {
 
             if (!mark || runMarks[mark] === i) {
                 func(timeFactor, timestamp);
+            } else {
+                console.log(`skip mark ${mark}`);
             }
         }
+
+        // setTimeout(() => runFrameWorker(timestamp), 400);
 
         runFrameWorker(timestamp);
     });
@@ -40,7 +44,11 @@ const runFrameWorker = (lastFrameTimestamp) => {
 
 const nextFrame = (func, mark) => {
     if (mark) {
-        marks[mark] = queue.push([func, mark]) - 1;
+        if (mark in marks) {
+            queue.splice(marks[mark], 1, [func, mark]);
+        } else {
+            marks[mark] = queue.push([func, mark]) - 1;
+        }
     } else {
         queue.push([func, mark]);
     }

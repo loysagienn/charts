@@ -4,6 +4,10 @@ class EventEmitter {
         this.lstnrs = {};
     }
 
+    clearEventListeners() {
+        this.lstnrs = {};
+    }
+
     on(event, listener) {
         if (!this.lstnrs[event]) {
             this.lstnrs[event] = [];

@@ -1,6 +1,6 @@
 
-import {createElement, appendChild, addEvent, withTheme} from '../helpers';
-import {LINE_OFF, LINE_ON} from '../constants';
+import {createElement, appendChild, addEvent, withTheme, removeEvent} from '../helpers';
+import {LINE_OFF, LINE_ON, SHOW_SUB_STORE} from '../constants';
 import css from './ChartsList.styl';
 
 
@@ -12,18 +12,55 @@ const createListItem = (node, store, lineId) => {
     const color = store.lineColors[lineId];
     const checkbox = createElement(css.checkbox);
     const title = createElement(css.title);
-    appendChild(title, document.createTextNode(name));
+    // appendChild(title, document.createTextNode(name));
+
+    const coloredTitle = createElement(css.coloredTitle);
+    appendChild(coloredTitle, document.createTextNode(name));
+
+    const whiteTitle = createElement(css.whiteTitle);
+    appendChild(whiteTitle, document.createTextNode(name));
+
+    const background = createElement(css.background);
 
     switcher.style.borderColor = color;
+    coloredTitle.style.color = color;
+    background.style.backgroundColor = color;
 
     if (isChecked(store, lineId)) {
         lineOn([switcher, title, color]);
     }
 
+    addEvent(switcher, 'mousedown', () => {
+        let timeout = null;
+        const onMouseUp = () => {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            removeEvent(switcher, 'mouseup', onMouseUp);
+
+            store.toggleLine(lineId);
+        };
+
+        addEvent(switcher, 'mouseup', onMouseUp);
+
+        timeout = setTimeout(() => {
+            timeout = null;
+
+            removeEvent(switcher, 'mouseup', onMouseUp);
+
+            store.showLine(lineId);
+        }, 500);
+    });
+
+    // addEvent(switcher, 'click', () => store.toggleLine(lineId));
+
+    appendChild(title, coloredTitle);
+    appendChild(title, whiteTitle);
+
+    appendChild(switcher, background);
     appendChild(switcher, checkbox);
     appendChild(switcher, title);
-
-    addEvent(switcher, 'click', () => store.toggleLine(lineId));
 
     appendChild(node, switcher);
 
@@ -34,18 +71,32 @@ const lineOn = ([switcher, title, color]) => {
     if (!switcher.classList.contains(css.checked)) {
         switcher.classList.add(css.checked);
     }
-
-    switcher.style.backgroundColor = color;
-    title.style.color = '#ffffff';
 };
 
 const lineOff = ([switcher, title, color]) => {
     if (switcher.classList.contains(css.checked)) {
         switcher.classList.remove(css.checked);
     }
+};
 
-    switcher.style.backgroundColor = 'rgba(0,0,0,0)';
-    title.style.color = color;
+const createLineItems = (store, root, list) => {
+    list.innerHTML = '';
+
+    if (store.allLineIds.length < 2) {
+        root.style.display = 'none';
+
+        return;
+    }
+
+    root.style.display = 'block';
+
+    const items = store.allLineIds.reduce(
+        (acc, lineId) => Object.assign(acc, {[lineId]: createListItem(list, store, lineId)}),
+        {},
+    );
+
+    store.on(LINE_ON, lineId => lineOn(items[lineId]));
+    store.on(LINE_OFF, lineId => lineOff(items[lineId]));
 };
 
 const ChartsList = (store) => {
@@ -55,13 +106,13 @@ const ChartsList = (store) => {
 
     appendChild(root, list);
 
-    const lineItems = store.allLineIds.reduce(
-        (acc, lineId) => Object.assign(acc, {[lineId]: createListItem(list, store, lineId)}),
-        {},
-    );
+    createLineItems(store, root, list);
 
-    store.on(LINE_ON, lineId => lineOn(lineItems[lineId]));
-    store.on(LINE_OFF, lineId => lineOff(lineItems[lineId]));
+    store.on(SHOW_SUB_STORE, () => {
+        if (store.transformToLineChart) {
+            createLineItems(store.subStore || store, root, list);
+        }
+    });
 
     return {node: root};
 };

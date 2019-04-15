@@ -10,11 +10,18 @@ $radius = 5px
         background-color: $chartBgColor
     .shadow
         background-color: $scalerShadowBgColor
-    .control
-        border-top: $topBottomBorderWidth solid $scalerControlBorderColor
-        border-bottom: $topBottomBorderWidth solid $scalerControlBorderColor
-        border-left: $resizerWidth solid $scalerControlBorderColor
-        border-right: $resizerWidth solid $scalerControlBorderColor
+    .topBorder,
+    .bottomBorder,
+    .leftScalerInner,
+    .rightScalerInner
+        background-color: $scalerControlBorderColor
+    .leftScaler,
+    .rightScaler
+        background-color: $chartBgColor
+    .leftDamper,
+    .rightDamper
+        svg path
+            fill: $chartBgColor
 
 .theme_dark
     &.chartScaler:before,
@@ -22,69 +29,138 @@ $radius = 5px
         background-color: $chartBgColorDark
     .shadow
         background-color: $scalerShadowBgColorDark
-    .control
-        border-top: $topBottomBorderWidth solid $scalerControlBorderColorDark
-        border-bottom: $topBottomBorderWidth solid $scalerControlBorderColorDark
-        border-left: $resizerWidth solid $scalerControlBorderColorDark
-        border-right: $resizerWidth solid $scalerControlBorderColorDark
+    .topBorder,
+    .bottomBorder,
+    .leftScalerInner,
+    .rightScalerInner
+        background-color: $scalerControlBorderColorDark
+    .leftScaler,
+    .rightScaler
+        background-color: transparent
+    .leftDamper,
+    .rightDamper
+        svg path
+            fill: $chartBgColorDark
 
 
 .chartScaler
     position: absolute
     left: $padding
-    &:before,
-    &:after
-        content: ''
-        display: block
+    z-index: 10
+    .leftDamper,
+    .rightDamper
         position: absolute
-        top: 0
-        bottom: 0
-        width: $padding
+        top: -10px
+        bottom: -10px
+        width: 20px
+        svg
+            width: 100%
+            height: 100%
+    .leftDamper
+        left: -10px
+    .rightDamper
+        right: -10px
+        svg
+            transform: rotate(180deg);
+            
+    &.animation
+        .control
+            transition: left 0.3s ease-out, right 0.3s ease-out
+        .shadow
+            transition: transform 0.3s ease-out
 
-    &:before
-        left: - $padding
-
-    &:after
-        right: - $padding
+.shadows
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: $radius
+    overflow: hidden;
 
 .shadow
-    position: absolute
-    top: 0
-    bottom: 0
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    will-change: transform;
     &.leftShadow
-        left: 0
-        border-radius: $radius 0 0 $radius
-
+        right: calc(100% - 5px);
     &.rightShadow
-        right: 0
-        border-radius: 0 $radius $radius 0
+        left: calc(100% - 5px);
 
 .control
-    box-sizing: border-box
-    position: absolute
-    top: 0
-    bottom: 0
-    touch-action: none
-    border-radius: $radius
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: $radius;
+    will-change: left, right;
+    .topBorder,
+    .bottomBorder
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        height: 1px;
+    .topBorder
+        top: -1px
+    .bottomBorder
+        bottom: -1px
+    .leftScaler,
+    .rightScaler
+        position: absolute;
+        top: -2px;
+        bottom: -2px;
+        width: 12px;
+        box-sizing: border-box;
+    .leftScaler
+        left: -1px;
+        border-radius: 7px 0 0 7px;
+    .rightScaler
+        right: -1px;
+        border-radius: 0 7px 7px 0;
+    .leftScalerInner,
+    .rightScalerInner
+        position: absolute;
+        left: 1px;
+        right: 1px;
+        top: 1px;
+        bottom: 1px;
+    .leftScalerInner
+        border-radius: 6px 0 0 6px;
+    .rightScalerInner
+        border-radius: 0 6px 6px 0;
+    .leftScalerTip,
+    .rightScalerTip
+        position: absolute;
+        height: 10px;
+        width: 2px;
+        border-radius: 2px;
+        top: calc(50% - 5px);
+        background-color: #fff;
+    .leftScalerTip
+        left: 4px;
+    .rightScalerTip
+        right: 4px;
     .resizer
         position: absolute
         top: - $topBottomBorderWidth
         bottom: - $topBottomBorderWidth
         width: $resizerWidth
         cursor: col-resize
-        z-index: 2
+        z-index: 20
 
         +onlyTouch()
             width: $resizerWidth * 3;
 
     .startResizer
-        left: - $resizerWidth
+        left: 0
     
         +onlyTouch()
             left: - $resizerWidth * 2
 
     .endResizer
-        right: - $resizerWidth
+        right: 0
     
         +onlyTouch()
             right: - $resizerWidth * 2
@@ -93,9 +169,10 @@ $radius = 5px
         position: absolute
         top: - $topBottomBorderWidth
         bottom: - $topBottomBorderWidth
-        left: 0
-        right: 0
+        left: $resizerWidth
+        right: $resizerWidth
         cursor: grab
+        z-index: 15
     
         +onlyTouch()
             left: $resizerWidth
@@ -103,19 +180,42 @@ $radius = 5px
 
         &:active
             cursor: grabbing
-    &:before,
-    &:after
-        content: ''
-        display: block
-        height: 10px
-        width: 2px
-        border-radius: 2px
-        background-color: #ffffff
-        position: absolute
-        top: calc(50% - 5px)
 
-    &:before
-        left: - ($resizerWidth / 2 + 1)
 
-    &:after
-        right: - ($resizerWidth / 2 + 1)
+
+// .shadow
+//     position: absolute
+//     top: 0
+//     bottom: 0
+//     &.leftShadow
+//         left: 0
+//         border-radius: $radius 0 0 $radius
+
+//     &.rightShadow
+//         right: 0
+//         border-radius: 0 $radius $radius 0
+
+// .control
+//     box-sizing: border-box
+//     position: absolute
+//     top: 0
+//     bottom: 0
+//     touch-action: none
+//     border-radius: $radius
+
+//     &:before,
+//     &:after
+//         content: ''
+//         display: block
+//         height: 10px
+//         width: 2px
+//         border-radius: 2px
+//         background-color: #ffffff
+//         position: absolute
+//         top: calc(50% - 5px)
+
+//     &:before
+//         left: - ($resizerWidth / 2 + 1)
+
+//     &:after
+//         right: - ($resizerWidth / 2 + 1)

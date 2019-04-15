@@ -7,6 +7,7 @@ const isProductionMode = process.env.NODE_ENV === 'production';
 const chartEntry = isProductionMode ? 'chart.min' : 'chart.banana';
 const exampleEntry = isProductionMode ? 'example.min' : 'example';
 const classNames = isProductionMode ? '__chart-lib__[hash:base64:5]' : '[name]__[local]';
+// const classNames = isProductionMode ? '[name]__[local]' : '[name]__[local]';
 
 module.exports = {
     mode: isProductionMode ? 'production' : 'development',

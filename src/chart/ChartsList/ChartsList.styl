@@ -37,6 +37,7 @@ $textTranslate = - (($contentSize - $paddingRight / 2) / 2)
     align-items: center
 
 .switcher
+    position: relative
     border-width: $borderWidth
     border-style: solid
     border-radius: $itemHeight
@@ -52,20 +53,35 @@ $textTranslate = - (($contentSize - $paddingRight / 2) / 2)
     &:not(:last-child)
         margin-right: 10px
 
-    .title
-        transition: color $transitionTime ease-out, transform $transitionTime ease-out
-        transform: translate($textTranslate, 0)
-        -ms-user-select: none; 
-        -moz-user-select: none; 
-        -webkit-user-select: none; 
-        user-select: none; 
-
     &.checked
+        .background
+            opacity: 1
         .checkbox
             transform: scale(1, 1)
             opacity: 1
         .title
             transform: translate(0, 0)
+            .coloredTitle
+                opacity: 0
+            .whiteTitle
+                opacity: 1
+
+    // .title
+    //     transition: color $transitionTime ease-out, transform $transitionTime ease-out
+    //     transform: translate($textTranslate, 0)
+    //     -ms-user-select: none; 
+    //     -moz-user-select: none; 
+    //     -webkit-user-select: none; 
+    //     user-select: none; 
+.background
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
 
 .checkbox
     position: relative
@@ -80,3 +96,23 @@ $textTranslate = - (($contentSize - $paddingRight / 2) / 2)
     transform: scale(0.1, 0.1)
     opacity: 0
     transition: transform $transitionTime ease-out, opacity $transitionTime ease-out
+
+.title
+    position: relative;
+    transition: transform 0.3s ease-out;
+    transform: translate(-9px, 0);
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    color: transparent;
+
+.coloredTitle
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: opacity 0.3s ease-out;
+
+.whiteTitle
+    color: #fff;
+    opacity: 0;

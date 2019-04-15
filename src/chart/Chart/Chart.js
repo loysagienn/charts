@@ -4,7 +4,8 @@ import createChartView from '../ChartView';
 import createChartScaler from '../ChartScaler';
 import crateChartsList from '../ChartsList';
 import createThemeSwitcher from '../ThemeSwitcher';
-import {CHANGE_SIZE} from '../constants';
+import createHeader from '../Header';
+import {CHANGE_SIZE, DRAG_STATE_TOGGLE} from '../constants';
 import {createElement, appendChild, withTheme} from '../helpers';
 
 const setSize = (viewScaler, width, height) => {
@@ -41,49 +42,42 @@ const throttle = (func, timeout) => {
     return wrapper;
 };
 
-
-const checkVisibility = (store, node) => {
-    const scrollHandler = () => {
-        const {top, bottom} = node.getBoundingClientRect();
-        const {innerHeight: height} = window;
-        // console.log(`${top}  ${bottom}  ${height}`);
-
-        const isInvisible = top > height || bottom < 0;
-
-        // console.log(!isInvisible);
-        store.changeVisibility(!isInvisible);
-    };
-
-    const onScroll = throttle(scrollHandler, 100);
-
-    window.addEventListener('scroll', onScroll, {
-        capture: true,
-        passive: true,
-    });
-
-    store.on(CHANGE_SIZE, () => scrollHandler());
+const onDragToggle = (store, node) => {
+    if (store.dragging) {
+        node.classList.add(css.noTouchActions);
+    } else {
+        node.classList.remove(css.noTouchActions);
+    }
 };
 
 const Chart = (store) => {
     const node = createElement(css.chart);
     withTheme(store, node, css);
 
+    const header = createHeader(store);
+
     const viewScaler = createElement(css.viewScaler);
-    appendChild(node, viewScaler);
 
     const chartView = createChartView(store);
     const chartScaler = createChartScaler(store);
-    const chartsList = crateChartsList(store);
     const themeSwitcher = createThemeSwitcher(store);
 
+    appendChild(viewScaler, chartView.image);
     appendChild(viewScaler, chartView.node);
     appendChild(viewScaler, chartScaler.node);
+
+    appendChild(node, header.node);
+    appendChild(node, viewScaler);
+
+    const chartsList = crateChartsList(store);
+
     appendChild(node, chartsList.node);
+
     appendChild(node, themeSwitcher.node);
 
     store.on(CHANGE_SIZE, ([[width, height]]) => setSize(viewScaler, width, height));
+    store.on(DRAG_STATE_TOGGLE, () => onDragToggle(store, node));
 
-    // checkVisibility(store, node);
 
     return {node};
 };

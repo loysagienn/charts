@@ -1,0 +1,49 @@
+.example__wrapper {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.example__root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+.example__chartWrapper {
+  position: relative;
+  width: 1000px;
+  margin: 15px auto;
+}
+@media all and (max-width: 1020px) {
+  .example__chartWrapper {
+    width: 100%;
+  }
+  .example__chartWrapper:first-child {
+    margin-top: 0;
+  }
+  .example__chartWrapper:last-child {
+    margin-bottom: 0;
+  }
+}
+.example__settings {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #404040;
+}
+.example__settings label {
+  margin-left: 10px;
+  user-select: none;
+  cursor: pointer;
+}
+.example__settings input {
+  cursor: pointer;
+}

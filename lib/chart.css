@@ -1,3 +1,37 @@
+.Chart__chart {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+.Chart__chart.Chart__theme_light {
+  background-color: #fff;
+}
+.Chart__chart.Chart__theme_dark {
+  background-color: #242f3e;
+}
+@media all and (max-width: 1020px) {
+  .Chart__chart {
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+.Chart__viewScaler {
+  position: relative;
+}
+.Chart__fps {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  padding: 10px 20px;
+  line-height: 30px;
+  color: #404040;
+}
+.Chart__noTouchActions {
+  touch-action: none;
+}
 .Webgl__canvas {
   display: block;
 }
@@ -35,35 +69,6 @@
   color: #fff;
   transition: opacity 0.3s ease-out;
   font-size: 9px;
-}
-.Chart__chart {
-  position: relative;
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-.Chart__chart.Chart__theme_light {
-  background-color: #fff;
-}
-.Chart__chart.Chart__theme_dark {
-  background-color: #242f3e;
-}
-@media all and (max-width: 1020px) {
-  .Chart__chart {
-    border-radius: 0;
-    box-shadow: none;
-  }
-}
-.Chart__viewScaler {
-  position: relative;
-}
-.Chart__fps {
-  position: absolute;
-  top: -50px;
-  right: 0;
-  padding: 10px 20px;
-  line-height: 30px;
-  color: #404040;
 }
 .Grid__grid {
   position: absolute;
@@ -139,6 +144,7 @@
   right: 15px;
   top: 0;
   bottom: 0;
+  transition: opacity 0.3s ease-out;
 }
 .BottomLabels__container {
   position: absolute;
@@ -146,15 +152,23 @@
   bottom: 0;
   left: 0;
   right: 0;
+  transition: opacity 0.3s ease-out;
 }
 .BottomLabels__label {
   position: absolute;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
   line-height: 22px;
   font-size: 11px;
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.2s ease-out;
+}
+.BottomLabels__label .BottomLabels__labelInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
 }
 .DetailsPopup__theme_light .DetailsPopup__line {
   background-color: rgba(24,45,59,0.1);
@@ -164,13 +178,17 @@
 }
 .DetailsPopup__theme_light .DetailsPopup__popup {
   background-color: #fff;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
 }
 .DetailsPopup__theme_light .DetailsPopup__popupXValue {
   color: #404040;
 }
-.DetailsPopup__theme_light .DetailsPopup__yItemName {
-  color: #404040;
+.DetailsPopup__theme_light .DetailsPopup__leftShadow,
+.DetailsPopup__theme_light .DetailsPopup__rightShadow {
+  background-color: rgba(255,255,255,0.3);
+}
+.DetailsPopup__theme_light.DetailsPopup__isBar .DetailsPopup__line {
+  background-color: transparent;
 }
 .DetailsPopup__theme_dark .DetailsPopup__line {
   background-color: rgba(255,255,255,0.1);
@@ -179,32 +197,43 @@
   background-color: #242f3e;
 }
 .DetailsPopup__theme_dark .DetailsPopup__popup {
-  background-color: #1b2533;
+  background-color: #242f3e;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
 }
 .DetailsPopup__theme_dark .DetailsPopup__popupXValue {
   color: #fff;
 }
-.DetailsPopup__theme_dark .DetailsPopup__yItemName {
-  color: #fff;
+.DetailsPopup__theme_dark .DetailsPopup__leftShadow,
+.DetailsPopup__theme_dark .DetailsPopup__rightShadow {
+  background-color: rgba(36,47,62,0.3);
+}
+.DetailsPopup__theme_dark.DetailsPopup__isBar .DetailsPopup__line {
+  background-color: transparent;
 }
 .DetailsPopup__root {
   position: absolute;
   left: 15px;
 }
 .DetailsPopup__root.DetailsPopup__visible .DetailsPopup__line {
-  display: block;
-  transition: transform 0.1s ease-out;
+  opacity: 1;
+  transition: transform 0.1s ease-out, opacity 0.2s ease-out;
 }
 .DetailsPopup__root.DetailsPopup__visible .DetailsPopup__mark {
   transition: transform 0.1s ease-out;
+}
+.DetailsPopup__root.DetailsPopup__visible .DetailsPopup__shadows {
+  display: block;
+}
+.DetailsPopup__root.DetailsPopup__isLine .DetailsPopup__line {
+  left: -0.5px;
 }
 .DetailsPopup__line {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -0.5px;
   width: 1px;
-  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 .DetailsPopup__mark {
   position: absolute;
@@ -223,10 +252,9 @@
   top: 20px;
   left: 0;
   padding: 10px;
-  background-color: #fff;
-  transform: translate(-50%, 0);
-  border-radius: 8px;
-  transition: opacity 0.2s ease-out;
+  min-width: 120px;
+  border-radius: 3px;
+  transition: transform 0.2s ease-out;
 }
 .DetailsPopup__popupXValue {
   font-size: 14px;
@@ -243,6 +271,29 @@
 .DetailsPopup__yItemValueLine .DetailsPopup__yItemName {
   margin-right: 10px;
 }
+.DetailsPopup__shadows {
+  position: absolute;
+  left: -15px;
+  right: -15px;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  display: none;
+}
+.DetailsPopup__shadows .DetailsPopup__leftShadow,
+.DetailsPopup__shadows .DetailsPopup__rightShadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  transition: transform 0.1s ease-out;
+}
+.DetailsPopup__shadows .DetailsPopup__leftShadow {
+  right: 100%;
+}
+.DetailsPopup__shadows .DetailsPopup__rightShadow {
+  left: 100%;
+}
 .ChartView__theme_light .ChartView__spacer {
   background-color: #fff;
 }
@@ -253,16 +304,11 @@
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 5;
 }
-.ChartView__spacer {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-}
-.ChartScaler__theme_light.ChartScaler__chartScaler:before,
-.ChartScaler__theme_light.ChartScaler__chartScaler:after {
-  background-color: #fff;
+.ChartScaler__theme_light .ChartScaler__leftDamper svg path,
+.ChartScaler__theme_light .ChartScaler__rightDamper svg path {
+  fill: #fff;
 }
 .ChartScaler__theme_light .ChartScaler__shadow {
   background-color: rgba(226,238,249,0.6);
@@ -277,13 +323,9 @@
 .ChartScaler__theme_light .ChartScaler__rightScaler {
   background-color: #fff;
 }
-.ChartScaler__theme_light .ChartScaler__leftDamper svg path,
-.ChartScaler__theme_light .ChartScaler__rightDamper svg path {
-  fill: #fff;
-}
-.ChartScaler__theme_dark.ChartScaler__chartScaler:before,
-.ChartScaler__theme_dark.ChartScaler__chartScaler:after {
-  background-color: #242f3e;
+.ChartScaler__theme_dark .ChartScaler__leftDamper svg path,
+.ChartScaler__theme_dark .ChartScaler__rightDamper svg path {
+  fill: #242f3e;
 }
 .ChartScaler__theme_dark .ChartScaler__shadow {
   background-color: rgba(48,66,89,0.6);
@@ -297,10 +339,6 @@
 .ChartScaler__theme_dark .ChartScaler__leftScaler,
 .ChartScaler__theme_dark .ChartScaler__rightScaler {
   background-color: transparent;
-}
-.ChartScaler__theme_dark .ChartScaler__leftDamper svg path,
-.ChartScaler__theme_dark .ChartScaler__rightDamper svg path {
-  fill: #242f3e;
 }
 .ChartScaler__chartScaler {
   position: absolute;
@@ -440,7 +478,7 @@
 }
 @media (pointer: coarse) {
   .ChartScaler__control .ChartScaler__startResizer {
-    left: -20px;
+    left: -10px;
   }
 }
 .ChartScaler__control .ChartScaler__endResizer {
@@ -448,7 +486,7 @@
 }
 @media (pointer: coarse) {
   .ChartScaler__control .ChartScaler__endResizer {
-    right: -20px;
+    right: -10px;
   }
 }
 .ChartScaler__control .ChartScaler__mover {
@@ -490,7 +528,6 @@
   font-size: 14px;
   cursor: pointer;
   display: flex;
-  transition: background-color 0.3s ease-out;
   margin-top: 10px;
 }
 .ChartsList__switcher:not(:last-child) {
@@ -546,13 +583,17 @@
   user-select: none;
   color: transparent;
 }
-.ChartsList__coloredTitle {
+.ChartsList__title .ChartsList__coloredTitle,
+.ChartsList__title .ChartsList__whiteTitle {
   position: absolute;
   left: 0;
   top: 0;
   transition: opacity 0.3s ease-out;
 }
-.ChartsList__whiteTitle {
+.ChartsList__title .ChartsList__coloredTitle {
+  opacity: 1;
+}
+.ChartsList__title .ChartsList__whiteTitle {
   color: #fff;
   opacity: 0;
 }

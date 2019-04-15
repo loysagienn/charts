@@ -3,6 +3,29 @@ import EventEmitter from '../EventEmitter';
 import {createElement, appendChild, addEvent} from '../helpers';
 import css from './ChartScaler.styl';
 
+const renderViewElems = (node) => {
+    const leftScaler = createElement(css.leftScaler);
+    const leftScalerInner = createElement(css.leftScalerInner);
+    const leftScalerTip = createElement(css.leftScalerTip);
+
+    const rightScaler = createElement(css.rightScaler);
+    const rightScalerInner = createElement(css.rightScalerInner);
+    const rightScalerTip = createElement(css.rightScalerTip);
+
+    const topBorder = createElement(css.topBorder);
+    const bottomBorder = createElement(css.bottomBorder);
+
+    appendChild(leftScaler, leftScalerInner);
+    appendChild(rightScaler, rightScalerInner);
+    appendChild(leftScalerInner, leftScalerTip);
+    appendChild(rightScalerInner, rightScalerTip);
+
+    appendChild(node, leftScaler);
+    appendChild(node, rightScaler);
+    appendChild(node, topBorder);
+    appendChild(node, bottomBorder);
+};
+
 const getResizer = (root, className) => {
     const resizer = createElement();
     resizer.classList.add(css.resizer);
@@ -30,6 +53,8 @@ const Control = () => {
     const eventEmitter = new EventEmitter();
 
     const node = createElement(css.control);
+
+    renderViewElems(node);
 
     const resizerStart = getResizer(node, css.startResizer);
     const resizerEnd = getResizer(node, css.endResizer);

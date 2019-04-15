@@ -1,64 +1,68 @@
 
-// import createSvg from '../ScalebleSvg';
-import createCanvas from '../Canvas';
 import createWebgl from '../Webgl';
-import createChartGrid from '../ChartGrid';
+import createGrid from '../Grid';
 import createBottomLabels from '../BottomLabels';
 import createDetailsPopup from '../DetailsPopup';
 import {createElement, appendChild, withTheme} from '../helpers';
-import {CHANGE_SIZE, ANIMATE_VIEW_BOX, PADDING, VIEW_SCALER_SPACE} from '../constants';
+import {CHANGE_SIZE, ANIMATE_VIEW_BOX, PADDING, SHOW_SUB_STORE} from '../constants';
 import css from './ChartView.styl';
 
 const SVG_LINE_WIDTH = 2;
 
-const createSpacer = () => {
-    const spacer = createElement(css.spacer);
-
-    spacer.style.height = `${VIEW_SCALER_SPACE}px`;
-
-    return spacer;
-};
-
 const setSize = (node, store, chartLine) => {
-    const {viewBox: {animationBox: viewBox}, fullViewBox: {animationBox: fullViewBox}, size: [, [width, height]]} = store;
+    const {size: [, [width, height]]} = store;
 
     node.style.width = `${width}px`;
     node.style.height = `${height}px`;
 
-    chartLine.render(fullViewBox, viewBox, width, height);
+    chartLine.render(width, height);
 };
 
 const setScale = (store, chartLine) => {
-    const {viewBox: {animationBox: viewBox}, fullViewBox: {animationBox: fullViewBox}, size: [, [width, height]]} = store;
+    const {size: [, [width, height]]} = store;
 
-    chartLine.render(fullViewBox, viewBox, width, height);
+    chartLine.render(width, height);
+};
+
+const setAnimationEvents = (store, chartLine) => {
+    store.viewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
+    store.fullViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
+
+    if (store.yScaled) {
+        store.secondaryViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
+        store.secondaryFullViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
+    }
 };
 
 export const ChartView = (store) => {
     const node = createElement(css.chartView);
     withTheme(store, node, css);
 
-    const chartGrid = createChartGrid(store);
+    const grid = createGrid(store);
 
-    // const chartLine = createSvg(store, SVG_LINE_WIDTH, PADDING);
     const chartLine = createWebgl(store, SVG_LINE_WIDTH, PADDING);
-    // const chartLine = createCanvas(store, SVG_LINE_WIDTH, PADDING);
 
     const bottomLabels = createBottomLabels(store);
-    const detailsPopup = createDetailsPopup(store);
-    const spacer = createSpacer();
 
-    appendChild(node, chartGrid.node);
-    appendChild(node, chartLine.node);
-    appendChild(node, spacer);
+    appendChild(node, grid.node);
     appendChild(node, bottomLabels.node);
+
+    // if (!store.isBar) {
+    const detailsPopup = createDetailsPopup(store);
     appendChild(node, detailsPopup.node);
+    // }
 
     store.on(CHANGE_SIZE, () => setSize(node, store, chartLine));
-    store.viewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
-    store.fullViewBox.on(ANIMATE_VIEW_BOX, () => setScale(store, chartLine));
 
-    return {node};
+    setAnimationEvents(store, chartLine);
+
+    store.on(SHOW_SUB_STORE, () => {
+        if (store.subStore) {
+            setAnimationEvents(store.subStore, chartLine);
+        }
+    });
+
+    return {node, image: chartLine.node};
 };
 
 export default ChartView;

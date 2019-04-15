@@ -10,20 +10,10 @@ import chart5 from '../../data/5/overview.json';
 
 const {chart} = window;
 
-// console.log(chartList);
-// const wrapper = document.createElement('div');
-// wrapper.classList.add(css.wrapper);
-
-// document.body.appendChild(wrapper);
-
 const root = document.createElement('div');
 root.classList.add(css.root);
 
-// wrapper.appendChild(root);
 document.body.appendChild(root);
-
-// const startFromZero = false;
-// let useDarkTheme = false;
 
 const charts = [];
 
@@ -34,75 +24,36 @@ console.log(chart4);
 console.log(chart5);
 
 const renderCharts = () => {
-    renderChart(chart1, 0);
-    renderChart(chart2, 1);
-    renderChart(chart3, 2);
-    renderChart(chart4, 3);
-    renderChart(chart5, 4);
+    renderChart(chart1, 0, {name: 'Chart #1', dataLink: '/data/1'});
+    renderChart(chart2, 1, {name: 'Chart #2', dataLink: '/data/2'});
+    renderChart(chart3, 2, {name: 'Chart #3', dataLink: '/data/3', isBar: true});
+    renderChart(chart4, 3, {name: 'Chart #4', dataLink: '/data/4', isBar: true, transformToLineChart: true});
+    renderChart(chart5, 4, {name: 'Chart #5', isArea: true});
 };
 
-const renderChart = (data, index) => {
+const renderChart = (data, index, {isBar = false, isArea = false, name = '', dataLink, transformToLineChart} = {}) => {
     const chartWrapper = document.createElement('div');
     chartWrapper.classList.add(css.chartWrapper);
     root.appendChild(chartWrapper);
 
-    const chartHeight = window.innerWidth < 1020
-        ? Math.max(200, window.innerHeight - 240)
-        : Math.max(200, window.innerHeight - 280);
+    let chartHeight = window.innerWidth < 1020
+        ? Math.max(200, window.innerHeight - 310)
+        : Math.max(200, window.innerHeight - 350);
+
+    if (chartHeight > 600) {
+        chartHeight = 600;
+    }
 
     setTimeout(() => {
         charts.push(chart.createChart(chartWrapper, data, {
-            // startFromZero: false,
             chartHeight,
-            // theme: useDarkTheme ? 'dark' : 'light',
+            isBar,
+            isArea,
+            name,
+            dataLink,
+            transformToLineChart,
         }));
-    }, 200 * index);
+    }, 100 * index);
 };
 
-// const renderThemeSwitcher = (optionsPopup) => {
-//     const darkThemeNode = document.createElement('label');
-//     optionsPopup.appendChild(darkThemeNode);
-
-//     const themeCheckbox = document.createElement('input');
-//     themeCheckbox.setAttribute('type', 'checkbox');
-//     darkThemeNode.appendChild(themeCheckbox);
-//     darkThemeNode.appendChild(document.createTextNode(' Dark theme'));
-//     themeCheckbox.checked = useDarkTheme;
-
-//     themeCheckbox.addEventListener('change', () => {
-//         useDarkTheme = themeCheckbox.checked;
-
-//         charts.forEach(item => item.setTheme(useDarkTheme ? 'dark' : 'light'));
-//     });
-// };
-
-// const renderStartFromZero = (optionsPopup) => {
-//     const chartModeNode = document.createElement('label');
-//     optionsPopup.appendChild(chartModeNode);
-
-//     const checkbox = document.createElement('input');
-//     checkbox.setAttribute('type', 'checkbox');
-//     chartModeNode.appendChild(checkbox);
-//     chartModeNode.appendChild(document.createTextNode(' Start from 0'));
-//     checkbox.checked = startFromZero;
-
-//     checkbox.addEventListener('change', () => {
-//         startFromZero = checkbox.checked;
-
-//         charts.forEach(item => item.changeStartFromZeroMode(startFromZero));
-//     });
-// };
-
-
-// const renderChartSettings = () => {
-//     const settingsNode = document.createElement('div');
-//     settingsNode.classList.add(css.settings);
-//     root.appendChild(settingsNode);
-
-//     renderThemeSwitcher(settingsNode);
-//     renderStartFromZero(settingsNode);
-// };
-
-
-// renderChartSettings();
 renderCharts();

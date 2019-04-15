@@ -7,9 +7,12 @@
         background-color: $chartBgColor
     .popup
         background-color: $chartBgColor
-        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2)
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2)
     .popupXValue
         color: #404040
+    .yItemName
+        color: #404040
+
 
 .theme_dark
     .line
@@ -17,9 +20,11 @@
     .mark
         background-color: $chartBgColorDark
     .popup
-        background-color: $chartBgColorDark
-        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3)
+        background-color: #1b2533
+        // box-shadow: 0 1px 3px 0 rgba(0,0,0,0.3)
     .popupXValue
+        color: #ffffff
+    .yItemName
         color: #ffffff
 
 .root
@@ -60,7 +65,7 @@
     padding: 10px
     background-color: white
     transform: translate(-50%, 0)
-    border-radius: 3px
+    border-radius: 8px
     transition: opacity 0.2s ease-out
 
 .popupXValue

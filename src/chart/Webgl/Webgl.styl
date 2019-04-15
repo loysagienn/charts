@@ -1,10 +1,36 @@
 
 .canvas
-    position: absolute
-    left: 0
-    top: 0
+    display: block
+    &.transition
+        transition: opacity 0.5s ease-out;
 
-.root
-    position: absolute
-    left: 0
-    top: 0
+.image
+    display: block;
+    position: relative;
+
+.canvas2d
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: opacity 0.5s ease-out;
+
+.pieNumbers
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+    background-color: rgba(255,0,0,0.3);
+    .pieNumber
+        position: absolute;
+        left: -25px;
+        top: -25px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        transition: opacity 0.3s ease-out;
+        font-size: 9px;

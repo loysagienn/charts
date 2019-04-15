@@ -30,6 +30,23 @@ export const getClientX = (event) => {
     return event.clientX;
 };
 
+export const getClientY = (event) => {
+    const {type} = event;
+
+    if (type.startsWith('touch')) {
+        return event.touches[0].clientY;
+    }
+
+    return event.clientY;
+};
+
+export const isScrollMove = ([startClientX, startClientY], event) => {
+    const clientX = getClientX(event);
+    const clientY = getClientY(event);
+
+    return Math.abs(startClientX - clientX) < Math.abs(startClientY - clientY);
+};
+
 const roundScale = scale => Math.round(scale * 1000) / 1000;
 
 const getScale = (pxelScale, width, oppositeScale) => {
@@ -88,17 +105,20 @@ export const getScaleMove = (event, boundingClientRect, pixelShift, scaleWidth) 
     return [scaleStart, scaleEnd];
 };
 
-export const startMove = (onMove) => {
+export const startMove = (onMove, clear) => {
     const cancelEvents = () => {
         removeEvent(window, 'mousemove', onMove);
         removeEvent(window, 'touchmove', onMove);
         removeEvent(window, 'mouseup', cancelEvents);
         removeEvent(window, 'touchend', cancelEvents);
         removeEvent(window, 'mouseleave', cancelEvents);
+        if (clear) {
+            clear();
+        }
     };
 
     addEvent(window, 'mousemove', onMove);
-    addEvent(window, 'touchmove', onMove);
+    addEvent(window, 'touchmove', onMove, {passive: false});
     addEvent(window, 'mouseup', cancelEvents);
     addEvent(window, 'touchend', cancelEvents);
     addEvent(window, 'mouseleave', cancelEvents);
