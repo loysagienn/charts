@@ -1,0 +1,66 @@
+@import '../variables.styl'
+
+.grid
+    position: absolute
+    left: 0
+    top: 0
+    overflow: hidden
+    transition: opacity 0.3s ease-out
+    &.isArea
+        overflow: visible
+    &.yScaled
+        .gridLine
+            display: flex
+            justify-content: space-between
+        &.mainLineOff
+            .lineText:first-child
+                opacity: 0
+        &.secondaryLineOff
+            .lineText:last-child
+                opacity: 0
+
+.theme_light
+    .gridLine
+        border-bottom: 1px solid $gridLineColor
+        color: $labelsFontColor
+    // .lineText
+    //     text-shadow: 1px 0 0 $chartBgColor, -1px 0 0 $chartBgColor, 0 1px 0 $chartBgColor, 0 -1px 0 $chartBgColor
+    // &.yScaled
+    //     .lineText
+    //         background-color: $chartBgColor
+
+.theme_dark
+    .gridLine
+        border-bottom: 1px solid $gridLineColorDark
+        color: $labelsFontColorDark
+    // .lineText
+    //     text-shadow: 1px 0 0 $chartBgColorDark, -1px 0 0 $chartBgColorDark, 0 1px 0 $chartBgColorDark, 0 -1px 0 $chartBgColorDark
+    // &.yScaled
+    //     .lineText
+    //         background-color: $chartBgColorDark
+
+.gridLine
+    position: absolute
+    left: $padding
+    right: $padding
+    bottom: 0
+    box-sizing: border-box
+    padding: 0
+    font-size: 11px;
+    -ms-user-select: none
+    -moz-user-select: none
+    -webkit-user-select: none
+    user-select: none
+    will-change: transform, opacity
+    transition: opacity 0.3s ease-out
+
+    .lineText
+        position: relative
+        margin: 0
+        padding: 1px 3px
+        display: inline-block
+        line-height: 14px
+        border-radius: 5px 5px 0 0
+        opacity: 1
+        will-change: opacity
+        transition: opacity 0.25s ease-out
